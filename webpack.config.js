@@ -11,7 +11,8 @@ const config = {
   mode: 'development',
   output: {
     filename: 'index.js',
-    path: path.resolve(dirname, './dist')
+    path: path.resolve(dirname, './dist'),
+    assetModuleFilename: 'assets/img/[name][ext]'
   },
   module: {
     rules: [
