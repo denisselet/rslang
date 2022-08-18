@@ -227,6 +227,7 @@ footer {
 .footer-link-gh {
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: center;
 	column-gap: 20px;
 	row-gap: 20px;
 }
@@ -235,5 +236,11 @@ footer {
 	text-decoration: none;
 	display: block;
 	color:rgb(83, 7, 184);
+}
+
+@media (max-width: 550px) {
+	footer {
+		justify-content: center;
+	}
 }
 
