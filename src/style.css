@@ -1,0 +1,162 @@
+body {
+	margin: 0;
+	background-image: url(./assets/img/126.jpg);
+	/* background-color:rgb(231, 199, 148); */
+	font-family: 'Arial', sans-serif;
+	box-sizing: border-box;
+}
+
+
+.account-block:hover {
+	cursor: pointer;
+	background-color: rgba(87, 77, 77, 0.3);
+	border-radius: 5px;
+	color:rgb(83, 7, 184);
+}
+
+.top-block-cap {
+	margin: 5px 25px 0 25px;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+/* menu start  */
+.menu {
+	list-style: none;
+	margin: 20px 0 15px;
+	padding: 25px 0 5px;
+	text-align: center;
+	background: rgba(87, 77, 77, 0.3);
+}
+
+.menu li {
+	display: inline-block;
+}
+
+.menu li:after {
+	content: "|";
+	color: black;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.menu li:last-child:after {
+	content: none;
+}
+
+.menu a {
+	text-decoration: none;
+	font-family: 'Arial', sans-serif;
+	letter-spacing: 2px;
+	position: relative;
+	padding-bottom: 20px;
+	margin: 0 34px 0 30px;
+	font-size: 17px;
+	text-transform: uppercase;
+	display: inline-block;
+	transition: color .2s;
+}
+
+.menu a,
+.menu a:visited {
+	color: black;
+}
+
+.menu a.current,
+.menu a:hover {
+	color: rgb(83, 7, 184);
+}
+
+
+.menu a:hover:before,
+.menu .current:before {
+	left: 0;
+}
+
+.menu a:hover:after,
+.menu .current:after {
+	right: 0;
+}
+
+@media (max-width: 550px) {
+	.menu {
+			padding-top: 0;
+	}
+
+	.menu li {
+			display: block;
+	}
+
+	.menu li:after {
+			content: none;
+	}
+
+	.menu a {
+			padding: 25px 0 20px;
+			margin: 0 30px;
+	}
+}
+/* menu end*/
+
+.section-description {
+	margin-top: 55px;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.section-description p {
+	width: 350px;
+	letter-spacing: 1.7px;
+}
+
+.description-span-1 {
+	font-size: 30px;
+}
+
+.description-span-2 {
+	font-size: 20px;
+	margin-top: 10px;
+	display: block;
+}
+
+.BoyBooks-image {
+	width: 200px;
+	margin-top: 5px;
+}
+
+.section-benefits {
+	margin-top: 60px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.text-section-benefits {
+	letter-spacing: 1.2px;
+	font-size: 30px;
+	margin-bottom: 20px;
+}
+
+.wrapper-benefits-items {
+	margin-top: 40px;
+	display: flex;
+	justify-content: center;
+	column-gap: 40px;
+	row-gap: 40px;
+	flex-wrap: wrap;
+	text-align: center;
+}
+
+.benefits-item {
+	width: 250px;
+	display: flex;
+	flex-direction: column;
+	align-items:center;
+}
+
+.benefits-item p {
+	letter-spacing: 1px;
+}
+
