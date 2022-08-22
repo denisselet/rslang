@@ -1,0 +1,133 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+#game-container,
+#game,
+#word-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  color: #ffffff;
+}
+
+#game-container {
+  height: 100%;
+  min-height: 100vh;
+  margin-left: auto;
+  margin-right: auto;
+  background-image: url(../assets/images/galaxy-space-background.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+#game {
+  background-color: #fff;
+  border-radius: 30px;
+  background: rgba(94, 143, 140, 0.7);
+  padding: 1rem;
+}
+
+.game__game-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-bottom: 2rem;
+}
+
+#game-sound-btn,
+#word-sound-btn {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+#game-sound-btn svg,
+#word-sound-btn svg {
+  height: 3rem;
+  width: 3rem;
+  scale: 0.7;
+}
+
+#game-score {
+  font-size: 3.5rem;
+}
+
+#word-container {
+  margin: 3rem 0 0.5rem 0;
+}
+
+#game-timer {
+  position: absolute;
+  left: 7%;
+  top: 7%;
+  font-size: 1.8rem;
+}
+
+.word-eng {
+  font-size: 2.5rem;
+  color: #FFFFFF;
+}
+
+.score-booster,
+.controlls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-booster__stars-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.stars-container__star {
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+  fill: lightgray;
+}
+
+.word-eng {
+  margin-bottom: 0.5rem;
+}
+
+.controlls__btn {
+  height: 3.1rem;
+  width: 10rem;
+  font-size: 1.15rem;
+  border: none;
+  border-radius: 50px;
+  margin: 1rem;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.controlls__btn-true {
+  background-color: #46b59b;
+}
+
+.controlls__btn-true:hover {
+  background-color: #39d8b3;
+  border-color: #39d8b3;
+}
+
+.controlls__btn-false {
+  background-color: #eb5b69;
+}
+
+.controlls__btn-false:hover {
+  background-color: #fa293e;
+}

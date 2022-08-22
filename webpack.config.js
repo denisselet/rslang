@@ -12,7 +12,8 @@ const config = {
   output: {
     filename: 'index.js',
     path: path.resolve(dirname, './dist'),
-    assetModuleFilename: 'assets/img/[name][ext]'
+    assetModuleFilename: 'assets/img/[name][ext]',
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -29,8 +30,12 @@ const config = {
         use: 'ts-loader'
       },
       {
-        test: /\.(png|jpe?g|gif)$/i,
+        test: /\.(mp3|png|jpe?g|gif)$/i,
         type: 'asset/resource'
+      },
+      {
+        test: /\.(svg)$/,
+        use: 'svg-inline-loader'
       }
     ]
   },
@@ -46,6 +51,7 @@ const config = {
     new ESLintPlugin({ extensions: 'ts' })
   ],
   devServer: {
+    historyApiFallback: true,
     client: {
       overlay: false
     }
