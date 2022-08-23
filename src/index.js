@@ -1,4 +1,6 @@
 window.onload = function () {
+
+	/* start login form functionality */
 	const login = document.getElementById('login');
 	const flip = document.querySelector('.flip');
 	const accountBlock = document.querySelector('.account-block');
@@ -16,5 +18,6 @@ window.onload = function () {
 			flip.classList.toggle('flipped');
 		}
 	})
+	/*end login form functionality */
 
 }

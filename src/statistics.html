@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>RSLang</title>
+	<link rel="icon" href="./assets/img/favicon.png" type="image/x-icon">
+	<link rel="stylesheet" type="text/css" href="./style.css" />
+</head>
+<body>
+	<div id="login" class="login-hidden">
+		<div class="flip">
+			<div class="form-signup">
+				<h1>Регистрация</h1>
+				<fieldset>
+				<p class="login-msg"></p>
+					<form>
+						<input type="email" placeholder="Введите Ваш email" required />
+						<input type="password" placeholder="Ваш пароль" required />
+						<input type="text" placeholder="Имя пользователя" required />
+						<input type="submit" value="Зарегистрироваться" />
+					</form>
+					<a href="#" class="flipper">Уже зарегистрированы? Войти.</a>
+					<button class="button-cancel-form">Отмена</button>
+				</fieldset>
+			</div>
+			<div class="form-login">
+				<h1>Авторизация</h1>
+				<fieldset>
+					<form>
+						<input type="email" placeholder="Логин или Email" required />
+						<input type="password" placeholder="Пароль" required />
+						<input type="submit" value="ВОЙТИ" />
+					</form>
+					<a href="#" class="flipper">Нет аккаунта? Регистрация.</a>
+					<button class="button-cancel-form">Отмена</button>
+				</fieldset>
+			</div>
+		</div>
+	</div>
+
+	<header class="header">
+		<div class="top-block-cap">
+			<h2>RSLang</h2>
+			<div class="account-block">
+				<img src="./assets/img/account.svg" alt="logo-account">
+				<div>Войти</div>
+			</div>
+		</div>
+
+		<nav>
+			<ul class="menu">
+				<li><a href="./home.html">Главная</a></li>
+				<li><a href="#textbook">Учебник</a></li>
+				<li><a href="#audiocall">Аудиовызов</a></li>
+				<li><a href="#sprint">Спринт</a></li>
+				<li ><a class="a-statistics" href="./statistics.html">Статистика</a></li>
+			</ul>
+		</nav>
+
+	</header>
+
+	<main class="block-statistics">
+		<p>
+			Общая статистика:
+		</p>
+		<table class="table">
+			<tbody>
+				<tr class="main-table-section">
+					<td>Игра</td>
+					<td>Изучено слов</td>
+					<td>Правильно(%)</td>
+					<td>Самая длинная серия</td>
+				</tr>
+				<tr>
+					<td>Спринт</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Аудиовызов</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Всего</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</main>
+
+	<footer>
+		<div>
+			<a href="https://rs.school/js/"><img class="rs-logo" src="./assets/img/rs.svg" alt="logo-rs"></a>
+		</div>
+
+		<div class="footer-link-gh">
+			<a href="https://github.com/denisselet">denisselet</a>
+			<a href="https://github.com/lapkot">lapkot</a>
+			<a href="https://github.com/Evgeniy652">Evgeniy652</a>
+		</div>
+
+		<div>
+			© 2022
+		</div>
+	</footer>
+  <script src="./index.js"></script>
+</body>
+</html>
