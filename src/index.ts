@@ -1,4 +1,4 @@
-import SprintService from './components/services/games/sprinter';
+import SprintService from './components/pages/sprinter';
 
 const pathname = window.location.pathname;
 switch (true) {
