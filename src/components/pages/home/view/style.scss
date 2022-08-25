@@ -1,0 +1,114 @@
+.section-description {
+	margin-top: 55px;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.section-description p {
+	width: 350px;
+	letter-spacing: 1.7px;
+}
+
+.description-span-1 {
+	font-size: 30px;
+}
+
+.description-span-2 {
+	font-size: 20px;
+	margin-top: 10px;
+	display: block;
+}
+
+.BoyBooks-image {
+	width: 200px;
+	margin-top: 5px;
+}
+
+.section-benefits {
+	margin-top: 60px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.text-section-benefits {
+	letter-spacing: 1.2px;
+	font-size: 30px;
+	margin-bottom: 20px;
+}
+
+.wrapper-benefits-items {
+	margin-top: 40px;
+	display: flex;
+	justify-content: center;
+	column-gap: 40px;
+	row-gap: 40px;
+	flex-wrap: wrap;
+	text-align: center;
+}
+
+.benefits-item {
+	width: 250px;
+	display: flex;
+	flex-direction: column;
+	align-items:center;
+
+    h3 {
+        margin: 18px 0;
+    }
+}
+
+.benefits-item p {
+    margin: 16px 0;
+	letter-spacing: 1px;
+}
+
+.section-team {
+	margin-top: 80px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.wrapper-team-items {
+	margin-top: 40px;
+	display: flex;
+	justify-content: center;
+	column-gap: 60px;
+	row-gap: 50px;
+	flex-wrap: wrap;
+	text-align: center;
+}
+
+.name-section-team {
+	letter-spacing: 1.2px;
+	font-size: 30px;
+}
+
+.team-item {
+	width: 250px;
+
+    h3 {
+        margin: 18px 0;
+    }
+}
+
+.team-item img {
+	border-radius: 70px;
+}
+
+.block-link-team-item {
+	margin-top: 10px;
+}
+
+.block-link-team-item a {
+	text-decoration: none;
+	font-size: 18px;
+	color:rgb(83, 7, 184);
+}
+
+.team-item p {
+    margin: 16px 0;
+	letter-spacing: 1px;
+}
