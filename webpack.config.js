@@ -5,6 +5,7 @@ const dirname = path.dirname(filename);
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ESLintPlugin from 'eslint-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 
 const config = {
   entry: './src/index',
@@ -46,6 +47,17 @@ const config = {
     new HtmlWebpackPlugin({
       template: path.resolve(dirname, './src/index.html'),
       filename: 'index.html'
+    }),
+    // in order to get static icons
+    new CopyPlugin({
+      patterns: [
+        {
+          from: './src/assets/img/**/*',
+          to({ absoluteFilename }) {
+            return absoluteFilename.replace('src', 'dist');
+          }
+        }
+      ]
     }),
     new CleanWebpackPlugin(),
     new ESLintPlugin({ extensions: 'ts' })

@@ -11,7 +11,8 @@ class SprintView {
   draw(onCorrect: () => void, onIncorrect: () => void) {
     const main = document.createElement('main');
     main.id = 'game-container';
-    document.body.append(main);
+    const content = document.querySelector('.mutable-content-wrapper');
+    content.append(main);
     const game = document.createElement('div');
     game.id = 'game';
     main.append(game);

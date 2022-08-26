@@ -1,0 +1,47 @@
+/*style page statistics*/
+.block-statistics {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 45px;
+}
+
+.block-statistics>p {
+    margin-bottom: 40px;
+	letter-spacing: 1.2px;
+	font-size: 30px;
+}
+
+.table{
+	border-collapse:collapse;
+	border-spacing:0;
+	display: inline-block;
+	vertical-align: top;
+	max-width: 100%;
+	overflow-x: auto;
+	white-space: nowrap;
+	-webkit-overflow-scrolling: touch;
+}
+
+.main-table-section td {
+	background-color:rgba(71, 71, 71, 0.35);
+}
+
+.table,
+.table td,
+.table th {
+	border: 1px solid #595959;
+}
+
+.table td,
+.table th {
+	padding: 3px;
+	width: 30px;
+	height: 35px;
+}
+
+.table th {
+	background: #347c99; 
+	color: #fff; 
+	font-weight: normal;
+}

@@ -1,0 +1,35 @@
+footer {
+	background-color: rgba(87, 77, 77, 0.45);
+	margin-top: 80px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	column-gap:20px;
+	row-gap: 20px;
+	font-size: 20px;
+	padding: 25px 20px 20px 20px;
+}
+
+.rs-logo {
+	width: 70px;
+}
+
+.footer-link-gh {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	column-gap: 20px;
+	row-gap: 20px;
+}
+
+.footer-link-gh a {
+	text-decoration: none;
+	display: block;
+	color:rgb(83, 7, 184);
+}
+
+@media (max-width: 550px) {
+	footer {
+		justify-content: center;
+	}
+}
