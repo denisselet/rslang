@@ -1,13 +1,18 @@
+import { Word } from '../../../types/Sptrinter';
 import SprintView from './view';
 
 class SprintService {
   private readonly apiUrl = 'https://learn-words-application.herokuapp.com';
 
+  private vocabularyGroup: number | undefined;
+
+  private vocabularyPage: number | undefined;
+
   private sprintView;
 
   private score;
 
-  private words: { word: string, wordTranslate: string, audio: string }[];
+  private words: Word[];
 
   private curentWordIndex: number;
 
@@ -19,7 +24,16 @@ class SprintService {
 
   private isMuted: boolean;
 
-  constructor() {
+  private answers: Array<{ word: Word, isCorrect: boolean }>;
+
+  constructor(
+    vocabularyGroup: number | undefined = undefined,
+    vocabularyPage: number | undefined = undefined
+  ) {
+    if (vocabularyGroup !== undefined && vocabularyPage !== undefined) {
+      this.vocabularyGroup = vocabularyGroup;
+      this.vocabularyPage = vocabularyPage;
+    }
     this.sprintView = new SprintView();
     this.score = 0;
     this.curentWordIndex = 0;
@@ -28,6 +42,7 @@ class SprintService {
     this.timer = 60;
     this.correctAnswersInLine = 0;
     this.isMuted = false;
+    this.answers = [];
   }
 
   onTimerChange() {
@@ -38,27 +53,48 @@ class SprintService {
         this.onTimerChange();
         return;
       }
-      this.finishGame();
+      if (this.curentWordIndex < this.words.length) {
+        this.finishGame();
+      }
     }, 1000);
   }
 
   start() {
-    this.onTimerChange();
-    fetch(`${this.apiUrl}/words?group=1&page=0`)
-      .then((response) => response.json())
-      .then((words) => {
-        this.words = words.sort(() => (Math.random() > 0.5) ? 1 : -1);
-        this.sprintView.draw(
-          this.onCorrect.bind(this),
-          this.onIncorrect.bind(this)
-        );
-        this.nextWord();
-        this.sprintView.drawTimer(this.timer);
-      });
+    if (this.vocabularyGroup !== undefined && this.vocabularyPage !== undefined) {
+      this.startGame();
+    } else {
+      this.sprintView.drawGameLevelSelector(this.onGameLevelSelect.bind(this));
+    }
+  }
+
+  startGame() {
+    this.answers = [];
+    this.sprintView.showLoading();
+    const lastPage = this.vocabularyPage as number;
+    Promise.all(Array.from(Array(lastPage + 1).keys()).map(
+      (page) => fetch(`${this.apiUrl}/words?group=1&page=${page}`).then((response) => response.json())
+    )).then((words) => {
+      this.words = words.flat().sort(() => (Math.random() > 0.5) ? 1 : -1);
+      this.sprintView.draw(
+        this.onCorrect.bind(this),
+        this.onIncorrect.bind(this)
+      );
+      this.sprintView.hideLoading();
+      this.onTimerChange();
+      this.nextWord();
+      this.sprintView.drawTimer(this.timer);
+    });
   }
 
   finishGame() {
-    this.sprintView.finishGame(this.score);
+    if (this.words.length) {
+      this.sprintView.finishGame(
+        this.score,
+        this.answers,
+        this.onRestartGame.bind(this),
+        this.onClose.bind(this)
+      );
+    }
   }
 
   nextWord() {
@@ -81,8 +117,10 @@ class SprintService {
   }
 
   changeScore(isAnswerCorrect: boolean) {
+    const word = { ...this.words[this.curentWordIndex], audio: `${this.apiUrl}/${this.words[this.curentWordIndex].audio}` };
+    this.answers.push({ word, isCorrect: isAnswerCorrect });
     if (isAnswerCorrect) {
-      this.sprintView.playCorrect();
+      this.sprintView.drawCorrectAnswer();
       let multiplier;
       switch (true) {
         case this.correctAnswersInLine >= 9:
@@ -97,11 +135,13 @@ class SprintService {
         default:
           multiplier = 1;
       }
-      this.score += 10 * multiplier;
+      const receivedScore = 10 * multiplier;
+      this.score += receivedScore;
+      this.sprintView.drawReceivedScore(receivedScore);
       this.correctAnswersInLine += this.correctAnswersInLine < 9 ? 1 : 0;
       return;
     }
-    this.sprintView.playIncorrect();
+    this.sprintView.drawIncorrectAnswer();
     this.correctAnswersInLine = 0;
   }
 
@@ -119,6 +159,20 @@ class SprintService {
     this.changeScore(this.isCurrentWordCorrect === false);
     this.curentWordIndex += 1;
     this.nextWord();
+  }
+
+  onGameLevelSelect(group: number) {
+    this.vocabularyGroup = group;
+    this.vocabularyPage = 29;
+    window.location.pathname = `/sprint/${this.vocabularyGroup}/${this.vocabularyPage}`;
+  }
+
+  onClose() {
+    window.location.pathname = '/';
+  }
+
+  onRestartGame() {
+    window.location.pathname = `/sprint/${this.vocabularyGroup}/${this.vocabularyPage}`;
   }
 }
 
