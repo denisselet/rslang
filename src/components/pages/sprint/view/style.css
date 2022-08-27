@@ -1,0 +1,359 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+h2 {
+  margin: 1.5rem;
+  font-size: 3rem;
+}
+
+#game-container,
+#game,
+#word-container,
+#sprint-start-screen,
+#finish-game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  color: #FFFFFF;
+  position: relative;
+}
+
+#game {
+  border-width: 3px;
+  border-style: solid;
+  border-color: transparent;
+}
+
+#game.game__correct-answer {
+border-color: #46b59b;
+}
+
+#game.game__incorrect-answer {
+border-color: #c26087;
+}
+
+#game-container {
+  height: 100%;
+  min-height: 100vh;
+  margin-left: auto;
+  margin-right: auto;
+  background-image: url(../assets/images/galaxy-space-background.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.level-message {
+  font-size: 1rem;
+  margin: 0.7rem;
+  text-align: center;
+}
+
+.level__btn {
+  height: 2.5rem;
+  width: 17rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;
+  margin: 0.3rem;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+.level__btn:hover {
+  background: rgba(159, 161, 161, 0.425);
+}
+
+.level__btn-A1 {
+  background-color: #46b59b;
+}
+
+.level__btn-A1:hover {
+	box-shadow: inset 0 0 0 3px #46b59b;
+}
+
+.level__btn-A2 {
+  background-color: #166351;
+}
+
+.level__btn-A2:hover {
+	box-shadow: inset 0 0 0 3px #166351;
+}
+
+.level__btn-B1 {
+  background-color: #545f92;
+}
+
+.level__btn-B1:hover {
+	box-shadow: inset 0 0 0 3px #545f92;
+}
+
+.level__btn-B2 {
+  background-color: #3b4b77;
+}
+
+.level__btn-B2:hover {
+	box-shadow: inset 0 0 0 3px #3b4b77;
+}
+
+.level__btn-C1 {
+  background-color: #c76099;
+}
+
+.level__btn-C1:hover {
+	box-shadow: inset 0 0 0 3px #c76099;
+}
+
+.level__btn-C2 {
+  background-color: #cf3381;
+}
+
+.level__btn-C2:hover {
+	box-shadow: inset 0 0 0 3px #cf3381;
+}
+
+#game,
+#sprint-start-screen,
+#finish-game-container {
+  background-color: #FFFFFF;;
+  border-radius: 30px;
+  background: rgba(94, 143, 140, 0.7);
+  padding: 1rem;
+}
+
+.game__game-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-bottom: 0.5rem;
+}
+
+#received-score {
+  padding-bottom: 0.5rem;
+  height: 2rem;
+  color: gold;
+  font-size: 1.5rem;
+}
+
+#game-sound-btn,
+#word-sound-btn,
+#result-sound-btn {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  scale: 0.7;
+}
+
+#game-sound-btn svg,
+#word-sound-btn svg {
+  height: 3rem;
+  width: 3rem;
+}
+
+#result-sound-btn svg {
+  height: 3rem;
+  width: 3rem;
+}
+
+#game-score {
+  font-size: 3.5rem;
+}
+
+#word-container {
+  margin: 3rem 0 0.5rem 0;
+}
+
+#game-timer {
+  position: absolute;
+  left: 7%;
+  top: 7%;
+  font-size: 1.8rem;
+}
+
+.word-eng {
+  font-size: 2.5rem;
+  color: #FFFFFF;
+}
+
+.score-booster,
+.controlls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-booster__stars-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.stars-container__star svg {
+  display: inline-block;
+  height: 3rem;
+  width: 3rem;
+}
+
+.word-eng {
+  margin-bottom: 0.5rem;
+}
+
+.controlls__btn {
+  height: 3.1rem;
+  width: 10rem;
+  font-size: 1.15rem;
+  border: none;
+  border-radius: 50px;
+  margin: 1rem;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+.finish-btns__restart,
+.finish-btns__close {
+  height: 2.5rem;
+  width: 9rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 50px;
+  margin: 0.3rem;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.5s ease;
+}
+
+.controlls__btn-true,
+.finish-btns__restart {
+  background-color: #46b59b;
+}
+
+.controlls__btn-true:hover,
+.finish-btns__restart:hover {
+  background-color: #39d8b3;
+  border-color: #39d8b3;
+}
+
+.controlls__btn-false,
+.finish-btns__close {
+  background-color: #c26087;
+}
+
+.controlls__btn-false:hover,
+.finish-btns__close:hover {
+  background-color: #f03e85;
+}
+
+#loading-indicator {
+  font-size: 2rem;
+}
+
+.finish-game__title {
+  padding: 1rem 0;
+}
+
+.answers-container {
+  overflow: auto;
+  width: 21rem;
+  height: 11rem;
+  background: rgba(14, 30, 53, 0.7);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  padding: 0 1rem 1rem 1rem;
+  color: #FFFFFF;
+  font-size: 1rem;
+}
+
+.answers-container__title {
+  font-size: 1.1rem;
+  border-bottom: 2px solid #c26087;
+  margin: 1rem 0 0.5rem 0; 
+}
+
+.finish-game__statistic {
+  height: 150px;
+  width: 150px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes animateProgressBar {
+  0% {
+    --percentage: 0;
+  }
+  100% {
+    --percentage: var(--value);
+  }
+}
+
+@property --percentage {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+.statistic__circle {
+  --percentage: var(--value);
+  position: relative;
+  height: 130px;
+  width: 130px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, transparent 0 100%), conic-gradient(#c26087 calc(var(--percentage) * 1%), rgba(159, 161, 161, 0.425) 0);
+  animation-name: animateProgressBar;
+  animation-duration: 3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.statistic__circle::before {
+  content: "";
+  position: absolute;
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  background-color: #28374d;
+}
+
+.statistic__info {
+  position: relative;
+  font-size: 1rem;
+  margin: 0 40px;
+  text-align: center
+}
+
+.word-in-result-container {
+  display: flex;
+  align-items: center;
+  height: 2rem;
+}
+
+@media screen and (max-width: 420px) {
+  #sprint-start-screen {
+    padding: 0.3rem;
+  }
+
+  .level-message {
+    max-width: 260px;
+  }
+
+  .level__btn {
+    height: 2.5rem;
+    width: 13rem;
+    font-size: 1.3rem;
+  }
+}

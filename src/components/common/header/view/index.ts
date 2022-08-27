@@ -14,7 +14,7 @@ export class HeaderView {
         <div class="top-block-cap">
             <h2>RSLang</h2>
             <div class="account-block">
-                <img src="./assets/img/account.svg" alt="logo-account">
+                <img src="/assets/img/account.svg" alt="logo-account">
                 <div>Войти</div>
             </div>
         </div>
@@ -23,7 +23,7 @@ export class HeaderView {
                 <li><a href="/">Главная</a></li>
                 <li><a href="/textbook">Учебник</a></li>
                 <li><a href="/audiocall">Аудиовызов</a></li>
-                <li><a href="/sprinter">Спринт</a></li>
+                <li><a href="/sprint">Спринт</a></li>
                 <li><a class="a-statistics" href="/statistics">Статистика</a></li>
             </ul>
         </nav>
