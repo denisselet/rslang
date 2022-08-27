@@ -229,10 +229,8 @@ class SprintView {
       setTimeout(() => { wordSoundBtn.innerHTML = WordSoundIcon; }, 1000);
     });
     const wordEl = document.createElement('span');
-    wordEl.innerText = word;
-    const wordTranslateEl = document.createElement('span');
-    wordTranslateEl.innerText = wordTranslate;
-    wordContainer.append(wordSoundBtn, wordEl, ' - ', wordTranslateEl);
+    wordEl.innerText = `${word} - ${wordTranslate}`;
+    wordContainer.append(wordSoundBtn, wordEl);
     return wordContainer;
   }
 

@@ -68,6 +68,7 @@ class Sprint {
     this.curentWordIndex = 0;
     this.correctAnswersInLine = 0;
     this.sprintView.showLoading();
+    this.timer = 60;
     const lastPage = this.vocabularyPage as number;
     Promise.all(Array.from(Array(lastPage + 1).keys()).map(
       (page) => fetch(`${this.apiUrl}/words?group=${this.vocabularyGroup}&page=${page}`).then((response) => response.json())

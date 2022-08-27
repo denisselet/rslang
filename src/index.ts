@@ -28,7 +28,7 @@ class Main {
       })
       .on('/sprint/:group/:page', ({ data }) => {
         const group = Number.isInteger(Number(data.group)) ? Number(data.group) : undefined;
-        const page = Number.isInteger(Number(data.page)) ? Number(data.group) : undefined;
+        const page = Number.isInteger(Number(data.page)) ? Number(data.page) : undefined;
         sprint.start(group, page);
       })
       .on('/sprint/?', () => {
