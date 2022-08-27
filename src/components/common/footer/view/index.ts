@@ -12,7 +12,7 @@ export class FooterView {
   private getTemplate(): string {
     return `<footer>
                 <div>
-                    <a href="https://rs.school/js/"><img class="rs-logo" src="./assets/img/rs.svg" alt="logo-rs"></a>
+                    <a href="https://rs.school/js/"><img class="rs-logo" src="/assets/img/rs.svg" alt="logo-rs"></a>
                 </div>
 
                 <div class="footer-link-gh">

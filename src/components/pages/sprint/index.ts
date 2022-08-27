@@ -1,7 +1,7 @@
-import { Word } from '../../../types/Sptrinter';
+import { Word } from '../../../types/Sprint';
 import SprintView from './view';
 
-class SprintService {
+class Sprint {
   private readonly apiUrl = 'https://learn-words-application.herokuapp.com';
 
   private vocabularyGroup: number | undefined;
@@ -26,14 +26,7 @@ class SprintService {
 
   private answers: Array<{ word: Word, isCorrect: boolean }>;
 
-  constructor(
-    vocabularyGroup: number | undefined = undefined,
-    vocabularyPage: number | undefined = undefined
-  ) {
-    if (vocabularyGroup !== undefined && vocabularyPage !== undefined) {
-      this.vocabularyGroup = vocabularyGroup;
-      this.vocabularyPage = vocabularyPage;
-    }
+  constructor() {
     this.sprintView = new SprintView();
     this.score = 0;
     this.curentWordIndex = 0;
@@ -59,8 +52,10 @@ class SprintService {
     }, 1000);
   }
 
-  start() {
-    if (this.vocabularyGroup !== undefined && this.vocabularyPage !== undefined) {
+  start(vocabularyGroup?: number, vocabularyPage?: number) {
+    if (vocabularyGroup !== undefined && vocabularyPage !== undefined) {
+      this.vocabularyGroup = vocabularyGroup;
+      this.vocabularyPage = vocabularyPage;
       this.startGame();
     } else {
       this.sprintView.drawGameLevelSelector(this.onGameLevelSelect.bind(this));
@@ -69,10 +64,13 @@ class SprintService {
 
   startGame() {
     this.answers = [];
+    this.score = 0;
+    this.curentWordIndex = 0;
+    this.correctAnswersInLine = 0;
     this.sprintView.showLoading();
     const lastPage = this.vocabularyPage as number;
     Promise.all(Array.from(Array(lastPage + 1).keys()).map(
-      (page) => fetch(`${this.apiUrl}/words?group=1&page=${page}`).then((response) => response.json())
+      (page) => fetch(`${this.apiUrl}/words?group=${this.vocabularyGroup}&page=${page}`).then((response) => response.json())
     )).then((words) => {
       this.words = words.flat().sort(() => (Math.random() > 0.5) ? 1 : -1);
       this.sprintView.draw(
@@ -172,8 +170,8 @@ class SprintService {
   }
 
   onRestartGame() {
-    window.location.pathname = `/sprint/${this.vocabularyGroup}/${this.vocabularyPage}`;
+    this.start(this.vocabularyGroup, this.vocabularyPage);
   }
 }
 
-export default SprintService;
+export default Sprint;

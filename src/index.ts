@@ -4,7 +4,7 @@ import { FooterService } from './components/common/footer';
 import { HeaderService } from './components/common/header';
 import { LoginService } from './components/common/login';
 import { HomeService } from './components/pages/home';
-import SprintService from './components/pages/sprinter';
+import Sprint from './components/pages/sprint';
 import { StatisticsService } from './components/pages/statistics';
 
 import './style.scss';
@@ -15,7 +15,7 @@ class Main {
   public static start() {
     const home = new HomeService();
     const statistic = new StatisticsService();
-    const sprinter = new SprintService();
+    const sprint = new Sprint();
 
     Main.commonComponents();
 
@@ -26,8 +26,13 @@ class Main {
       .on('/statistics', () => {
         statistic.start();
       })
-      .on('/sprinter', () => {
-        sprinter.start();
+      .on('/sprint/:group/:page', ({ data }) => {
+        const group = Number.isInteger(Number(data.group)) ? Number(data.group) : undefined;
+        const page = Number.isInteger(Number(data.page)) ? Number(data.group) : undefined;
+        sprint.start(group, page);
+      })
+      .on('/sprint/?', () => {
+        sprint.start();
       })
       .resolve();
   }

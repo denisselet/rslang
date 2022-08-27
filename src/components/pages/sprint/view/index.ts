@@ -6,21 +6,22 @@ import WordSoundIcon from '../assets/images/volume_down.svg';
 import WordSoundOnIcon from '../assets/images/volume_up.svg';
 import RightAnswerSound from '../assets/audio/right-answer.mp3';
 import WrongAnswerSound from '../assets/audio/wrong-answer.mp3';
-import { Word } from '../../../../types/Sptrinter';
+import { Word } from '../../../../types/Sprint';
 
 class SprintView {
   private bodyKeyboardListenerFn: ((event: KeyboardEvent) => void) | undefined;
 
   draw(onCorrect: () => void, onIncorrect: () => void) {
-    let section = document.getElementById('game-container');
-    if (!section) {
-      section = document.createElement('section');
-      section.id = 'game-container';
-      document.body.querySelector('main')?.append(section);
+    let main = document.getElementById('game-container');
+    if (!main) {
+      main = document.createElement('main');
+      main.id = 'game-container';
+      const content = document.querySelector('.mutable-content-wrapper');
+      content.append(main);
     }
     const game = document.createElement('div');
     game.id = 'game';
-    section.append(game);
+    main.append(game);
     const gameControlls = this.getGameControlls(onCorrect, onIncorrect);
     const gameHeader = document.createElement('div');
     gameHeader.className = 'game__game-header';
@@ -200,7 +201,10 @@ class SprintView {
     const restart = document.createElement('button');
     restart.innerText = 'Начать заново';
     restart.className = 'finish-btns__restart';
-    restart.addEventListener('click', () => onRestartGame());
+    restart.addEventListener('click', () => {
+      document.getElementById('game-container').remove();
+      onRestartGame();
+    });
     finishGameBtns.append(restart);
 
     const close = document.createElement('button');
@@ -273,12 +277,12 @@ class SprintView {
   }
 
   drawGameLevelSelector(onSelect: (group: number) => void) {
-    const section = document.createElement('section');
-    section.id = 'game-container';
-    document.body.querySelector('main')?.append(section);
+    const main = document.createElement('main');
+    main.id = 'game-container';
+    document.querySelector('.mutable-content-wrapper').append(main);
     const sprintStart = document.createElement('div');
     sprintStart.id = 'sprint-start-screen';
-    section.append(sprintStart);
+    main.append(sprintStart);
     const levelHeader = document.createElement('h2');
     levelHeader.innerText = 'СПРИНТ';
     const level = document.createElement('span');
@@ -321,7 +325,7 @@ class SprintView {
       btn.dataset.value = index.toString();
       sprintStart.append(btn);
     });
-    section.addEventListener('click', (event) => {
+    main.addEventListener('click', (event) => {
       const btn = (event.target as HTMLElement).closest('button');
       if (btn?.dataset?.value) {
         onSelect(Number(btn.dataset.value));
@@ -338,13 +342,13 @@ class SprintView {
   }
 
   showLoading() {
-    const section = document.createElement('section');
-    section.id = 'game-container';
-    document.body.querySelector('main')?.append(section);
+    const main = document.createElement('main');
+    main.id = 'game-container';
+    document.querySelector('.mutable-content-wrapper').append(main);
     const header = document.createElement('h2');
     header.id = 'loading-indicator';
     header.innerText = 'Подождите, игра загружается...';
-    section.append(header);
+    main.append(header);
   }
 
   hideLoading() {

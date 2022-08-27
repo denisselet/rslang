@@ -17,7 +17,7 @@ export class HomeView {
                         <span class="description-span-2">Играйте в игры, слушайте произношение и запоминайте слова, совершенствуйте свои знания.</span>
                     </p>
                     <div>
-                        <img class="BoyBooks-image" src="./assets/img/BoyBooks.png" alt="BoyBooks">
+                        <img class="BoyBooks-image" src="/assets/img/BoyBooks.png" alt="BoyBooks">
                     </div>
                 </section>
 
@@ -27,7 +27,7 @@ export class HomeView {
                     </p>
                     <div class="wrapper-benefits-items">
                         <div class="benefits-item">
-                            <img src="./assets/img/book.png" alt="logo-book">
+                            <img src="/assets/img/book.png" alt="logo-book">
                             <h3>Учебник</h3>
                             <p>
                                 Электронный учебник поможет освоить произношение и перевод слов, состоит из шести разделов, 
@@ -36,7 +36,7 @@ export class HomeView {
                         </div>
 
                         <div class="benefits-item">
-                            <img src="./assets/img/games.png" alt="logo-games">
+                            <img src="/assets/img/games.png" alt="logo-games">
                             <h3>Игры</h3>
                             <p>
                                 Мини-игры "Аудиовызов" и "Спринт" помогут изучать слова в интересной игровой форме.
@@ -44,7 +44,7 @@ export class HomeView {
                         </div>
 
                         <div class="benefits-item">
-                            <img src="./assets/img/dictionary.png" alt="logo-dictionary">
+                            <img src="/assets/img/dictionary.png" alt="logo-dictionary">
                             <h3>Словарь</h3>
                             <p>
                                 Словарь содержит: объяснение значения слов, перевод изучаемого слова, картинку-ассоциацию, произношение изучаемого слова.
@@ -52,7 +52,7 @@ export class HomeView {
                         </div>
 
                         <div class="benefits-item">
-                            <img src="./assets/img/statistics.png" alt="logo-statistics">
+                            <img src="/assets/img/statistics.png" alt="logo-statistics">
                             <h3>Статистика</h3>
                             <p>
                                 На странице статистики отображается  статистика по мини-играм и по словам за каждый день изучения.
@@ -68,7 +68,7 @@ export class HomeView {
                     </p>
                     <div class="wrapper-team-items">
                         <div class="team-item">
-                            <img src="./assets/img/Denis.jpg" alt="avatar">
+                            <img src="/assets/img/Denis.jpg" alt="avatar">
                             <div class="block-link-team-item">
                                 <a href="https://github.com/denisselet">denisselet</a>
                             </div>
@@ -78,7 +78,7 @@ export class HomeView {
                         </div>
 
                         <div class="team-item">
-                            <img src="./assets/img/Tanya.jpg" alt="avatar">
+                            <img src="/assets/img/Tanya.jpg" alt="avatar">
                             <div class="block-link-team-item">
                                 <a href="https://github.com/lapkot">lapkot</a>
                             </div>
@@ -88,7 +88,7 @@ export class HomeView {
                         </div>
 
                         <div class="team-item">
-                            <img src="./assets/img/Zhenya.jpg" alt="avatar">
+                            <img src="/assets/img/Zhenya.jpg" alt="avatar">
                             <div class="block-link-team-item">
                                 <a href="https://github.com/Evgeniy652">Evgeniy652</a>
                             </div>

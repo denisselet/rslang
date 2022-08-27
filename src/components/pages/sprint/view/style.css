@@ -24,14 +24,21 @@ h2 {
   justify-content: center;
   font-size: 1.7rem;
   color: #FFFFFF;
+  position: relative;
 }
 
-.game__correct-answer {
-  border: solid 3px #46b59b;
+#game {
+  border-width: 3px;
+  border-style: solid;
+  border-color: transparent;
 }
 
-.game__incorrect-answer {
-  border: solid 3px #c26087;
+#game.game__correct-answer {
+border-color: #46b59b;
+}
+
+#game.game__incorrect-answer {
+border-color: #c26087;
 }
 
 #game-container {
