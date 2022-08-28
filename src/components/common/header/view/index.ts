@@ -12,7 +12,7 @@ export class HeaderView {
   private getTemplate(): string {
     return `<header class="header">
         <div class="top-block-cap">
-            <h2>RSLang</h2>
+            <h1>RSLang</h1>
             <div class="account-block">
                 <img src="/assets/img/account.svg" alt="logo-account">
                 <div>Войти</div>
