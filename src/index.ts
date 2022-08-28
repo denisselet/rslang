@@ -16,15 +16,18 @@ class Main {
     const home = new HomeService();
     const statistic = new StatisticsService();
     const sprint = new Sprint();
+		const footer = new FooterService();
 
     Main.commonComponents();
 
     router
       .on('', () => {
         home.start();
+				footer.start();
       })
       .on('/statistics', () => {
         statistic.start();
+				footer.start();
       })
       .on('/sprint/:group/:page', ({ data }) => {
         const group = Number.isInteger(Number(data.group)) ? Number(data.group) : undefined;
@@ -40,11 +43,10 @@ class Main {
   private static commonComponents() {
     const header = new HeaderService();
     const login = new LoginService();
-    const footer = new FooterService();
+   
 
     login.start();
     header.start();
-    footer.start();
   }
 }
 
