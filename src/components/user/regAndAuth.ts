@@ -2,7 +2,8 @@ import SignInService from '../services/signIn-service';
 import UsersService from '../services/users-service';
 
 export async function registration() {
-  document.querySelector('#but_reg').addEventListener('click', async () => {
+  document.querySelector('#but_reg').addEventListener('click', async (event) => {
+    event.preventDefault();
     const emailReg = (document.querySelector('#email_reg') as HTMLInputElement).value;
     const passReg = (document.querySelector('#pass_reg') as HTMLInputElement).value;
     const nameReg = (document.querySelector('#name_reg') as HTMLInputElement).value;
@@ -20,7 +21,8 @@ export async function registration() {
 }
 
 export async function authorization() {
-  document.querySelector('#but_auth').addEventListener('click', async () => {
+  document.querySelector('#but_auth').addEventListener('click', async (event) => {
+    event.preventDefault();
     const emailAuth = (document.querySelector('#email_auth') as HTMLInputElement).value;
     const passAuth = (document.querySelector('#pass_auth') as HTMLInputElement).value;
     const response = await SignInService.userLogin({
