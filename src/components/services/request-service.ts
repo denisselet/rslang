@@ -34,6 +34,9 @@ class RequestService {
   async post(url: string, data: object) {
     try {
       const response = await this.response(url, HttpMethod.POST, data);
+      if (!(response.status === 200 || response.status === 204)) {
+        return response.statusText;
+      }
       return response.json();
     } catch (err) {
       throw new Error((err as Error).message);

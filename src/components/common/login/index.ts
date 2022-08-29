@@ -1,3 +1,4 @@
+import { authorization, registration } from '../../user/regAndAuth';
 import { LoginView } from './view';
 
 export class LoginService {
@@ -15,6 +16,11 @@ export class LoginService {
   private addListener(): void {
     const login: HTMLElement = document.getElementById('login');
     const flip = document.querySelector<HTMLElement>('.flip');
+
+    flip.classList.toggle('flipped');
+
+    registration();
+    authorization();
 
     if (!login) {
       console.log('there is no login element');
