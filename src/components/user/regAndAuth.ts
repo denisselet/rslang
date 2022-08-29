@@ -11,10 +11,11 @@ export async function registration() {
       email: String(emailReg),
       password: String(passReg)
     });
-    if (response.name) return 'Registered';
-
-    alert('Incorrect email and password');
-    return 'No registered';
+    if (response.name) {
+      document.querySelector<HTMLElement>('.flip').classList.toggle('flipped');
+    } else {
+      alert('Incorrect email and password');
+    }
   });
 }
 
@@ -26,11 +27,11 @@ export async function authorization() {
       email: String(emailAuth),
       password: String(passAuth)
     });
-    alert(response);
-
     if (response === 'Not Found') {
       alert('Incorrect email and password');
+    } else {
+      document.getElementById('login').classList.remove('login-visible');
+      setTimeout(() => window.location.reload(), 1000);
     }
-    return response;
   });
 }

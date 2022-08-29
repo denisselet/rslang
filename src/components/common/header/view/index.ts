@@ -1,4 +1,5 @@
 // TODO: add assets as img
+import { checkAuth } from '../../../user/checkAuth';
 import './style.scss';
 
 export class HeaderView {
@@ -15,7 +16,7 @@ export class HeaderView {
             <h1>RSLang</h1>
             <div class="account-block">
                 <img src="/assets/img/account.svg" alt="logo-account">
-                <div>Войти</div>
+                <div>${(checkAuth()) ? 'Выйти' : 'Войти'}</div>
             </div>
         </div>
         <nav>
