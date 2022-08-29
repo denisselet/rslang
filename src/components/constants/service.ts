@@ -1,7 +1,7 @@
 export default class Service {
   static get LINK() {
-    // return 'https://learn-words-application.herokuapp.com';
-    return 'http://localhost:8000';
+    return 'https://learn-words-application.herokuapp.com';
+    // return 'http://localhost:8000';
   }
 
   static get USERS() {

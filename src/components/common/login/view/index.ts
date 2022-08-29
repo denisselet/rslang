@@ -16,10 +16,10 @@ export class LoginView {
                         <fieldset>
                         <p class="login-msg"></p>
                             <form>
-                                <input type="email" placeholder="Введите Ваш email" required />
-                                <input type="password" placeholder="Ваш пароль" required />
-                                <input type="text" placeholder="Имя пользователя" required />
-                                <input type="submit" value="Зарегистрироваться" />
+                                <input id="email_reg" type="email" placeholder="Введите Ваш email" required />
+                                <input id="pass_reg" type="password" placeholder="Ваш пароль" required />
+                                <input id="name_reg" type="text" placeholder="Имя пользователя" required />
+                                <input id="but_reg" type="submit" value="Зарегистрироваться" />
                             </form>
                             <a href="#" class="flipper">Уже зарегистрированы? Войти.</a>
                             <button class="button-cancel-form">Отмена</button>
@@ -29,9 +29,9 @@ export class LoginView {
                         <h1>Авторизация</h1>
                         <fieldset>
                             <form>
-                                <input type="email" placeholder="Логин или Email" required />
-                                <input type="password" placeholder="Пароль" required />
-                                <input type="submit" value="ВОЙТИ" />
+                                <input id="email_auth" type="email" placeholder="Логин или Email" required />
+                                <input id="pass_auth" type="password" placeholder="Пароль" required />
+                                <input id="but_auth" type="submit" value="ВОЙТИ" />
                             </form>
                             <a href="#" class="flipper">Нет аккаунта? Регистрация.</a>
                             <button class="button-cancel-form">Отмена</button>

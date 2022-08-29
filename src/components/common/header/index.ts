@@ -1,3 +1,4 @@
+import { checkAuth } from '../../user/checkAuth';
 import { HeaderView } from './view';
 
 export class HeaderService {
@@ -14,7 +15,12 @@ export class HeaderService {
       const login: HTMLElement = document.getElementById('login');
 
       accountBlock.addEventListener('click', () => {
-        login.classList.toggle('login-visible');
+        if (checkAuth()) {
+          localStorage.clear();
+          setTimeout(() => window.location.reload(), 500);
+        } else {
+          login.classList.toggle('login-visible');
+        }
       });
     });
   }
