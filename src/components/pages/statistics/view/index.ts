@@ -12,15 +12,15 @@ export class StatisticsView {
   private getTemplate(): string {
     return `<main class="block-statistics">
                 <p>
-                    Общая статистика:
+								  Краткосрочная статистика по мини-играм и по словам за каждый день изучения:
                 </p>
                 <table class="table">
                     <tbody>
                         <tr class="main-table-section">
-                            <td>Игра</td>
-                            <td>Изучено слов</td>
-                            <td>Правильно(%)</td>
-                            <td>Самая длинная серия</td>
+                            <td>Статистика по мини-играм</td>
+                            <td>Количество новых слов за день</td>
+                            <td>Процент правильных ответов</td>
+                            <td>Самая длинная серия правильных ответов</td>
                         </tr>
                         <tr>
                             <td>Спринт</td>
@@ -34,8 +34,14 @@ export class StatisticsView {
                             <td></td>
                             <td></td>
                         </tr>
+                        <tr class="main-table-section">
+                            <td>Статистика по словам</td>
+                            <td>Количество новых слов за день</td>
+                            <td>Процент правильных ответов за день</td>
+                            <td>Количество изученных слов за день</td>
+                        </tr>
                         <tr>
-                            <td>Всего</td>
+                            <td>Слова</td>
                             <td></td>
                             <td></td>
                             <td></td>
