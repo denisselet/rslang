@@ -1,1 +1,1 @@
-export interface Word { word: string, wordTranslate: string, audio: string }
+export interface Word { id: string, word: string, wordTranslate: string, audio: string }

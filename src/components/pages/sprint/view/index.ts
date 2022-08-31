@@ -22,7 +22,7 @@ class SprintView {
     const game = document.createElement('div');
     game.id = 'game';
     main.append(game);
-    const gameControlls = this.getGameControlls(onCorrect, onIncorrect);
+    const gameControls = this.getGameControls(onCorrect, onIncorrect);
     const gameHeader = document.createElement('div');
     gameHeader.className = 'game__game-header';
 
@@ -67,7 +67,7 @@ class SprintView {
     game.append(receivedScore);
     game.append(scoreBooster);
     game.append(wordContainer);
-    game.append(gameControlls);
+    game.append(gameControls);
   }
 
   drawTimer(timer: number) {
@@ -121,9 +121,9 @@ class SprintView {
     return scoreBoosterContainer;
   }
 
-  getGameControlls(onCorrect: () => void, onIncorrect: () => void) {
-    const controlls = document.createElement('div');
-    controlls.className = 'controlls';
+  getGameControls(onCorrect: () => void, onIncorrect: () => void) {
+    const controls = document.createElement('div');
+    controls.className = 'controls';
     this.bodyKeyboardListenerFn = (event: KeyboardEvent) => {
       if (event.code === 'ArrowRight') {
         onIncorrect();
@@ -134,24 +134,24 @@ class SprintView {
     };
     document.body.addEventListener('keydown', this.bodyKeyboardListenerFn);
     const trueButton = document.createElement('button');
-    trueButton.className = 'controlls__btn controlls__btn-true';
+    trueButton.className = 'controls__btn controls__btn-true';
     trueButton.innerText = 'Верно';
     trueButton.addEventListener('click', () => onCorrect());
     const falseButton = document.createElement('button');
-    falseButton.className = 'controlls__btn controlls__btn-false';
+    falseButton.className = 'controls__btn controls__btn-false';
     falseButton.innerText = 'Неверно';
     falseButton.addEventListener('click', () => onIncorrect());
-    const correctAutio = document.createElement('audio');
-    correctAutio.src = RightAnswerSound;
-    correctAutio.id = 'correct-sound';
-    const incorrectAutio = document.createElement('audio');
-    incorrectAutio.src = WrongAnswerSound;
-    incorrectAutio.id = 'incorrect-sound';
-    controlls.append(trueButton);
-    controlls.append(falseButton);
-    controlls.append(correctAutio);
-    controlls.append(incorrectAutio);
-    return controlls;
+    const correctAudio = document.createElement('audio');
+    correctAudio.id = 'correct-sound';
+    const incorrectAudio = document.createElement('audio');
+    incorrectAudio.id = 'incorrect-sound';
+    correctAudio.src = RightAnswerSound;
+    incorrectAudio.src = WrongAnswerSound;
+    controls.append(correctAudio);
+    controls.append(incorrectAudio);
+    controls.append(trueButton);
+    controls.append(falseButton);
+    return controls;
   }
 
   finishGame(
@@ -160,13 +160,9 @@ class SprintView {
     onRestartGame: () => void,
     onClose: () => void
   ) {
-    [...document.querySelectorAll('audio')].forEach((el) => el.pause());
     document.body.removeEventListener('keydown', this.bodyKeyboardListenerFn as (event: KeyboardEvent) => void);
-    const gameContainer = document.getElementById('game-container') as HTMLElement;
-    gameContainer.innerHTML = '';
     const finishGame = document.createElement('div');
     finishGame.id = 'finish-game-container';
-    gameContainer.append(finishGame);
     const scoreTitle = document.createElement('div');
     scoreTitle.innerText = `Твой результат ${score} очков`;
     scoreTitle.className = 'finish-game__title';
@@ -212,6 +208,13 @@ class SprintView {
     close.className = 'finish-btns__close';
     close.addEventListener('click', () => onClose());
     finishGameBtns.append(close);
+
+    setTimeout(() => {
+      [...document.querySelectorAll('audio')].forEach((el) => el?.pause());
+      const gameContainer = document.getElementById('game-container') as HTMLElement;
+      gameContainer.innerHTML = '';
+      gameContainer.append(finishGame);
+    }, 500);
   }
 
   getAnswer({ word, wordTranslate, audio }: Word): HTMLElement {

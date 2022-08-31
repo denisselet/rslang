@@ -21,11 +21,11 @@ export default class Service {
   }
 
   static get PAGE() {
-    return '_page';
+    return 'page';
   }
 
   static get GROUP() {
-    return '_group';
+    return 'group';
   }
 
   static get AGGREGATED() {
