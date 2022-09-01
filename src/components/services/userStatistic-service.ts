@@ -7,9 +7,6 @@ export default class UserStatisticService {
     const url = `${Service.USERS}/${user.userId}/${Service.STATISTICS}`;
     try {
       const response = await requestService.get(url);
-      if (response.status === 404) {
-        throw new Error();
-      }
       return response;
     } catch (err) {
       throw new Error((err as Error).message);
