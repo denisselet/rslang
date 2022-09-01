@@ -1,4 +1,4 @@
-import { IWord } from '../../../types/word';
+import { IWord } from '../../../types/wordStat';
 import USER from '../../constants/user';
 
 export function addNewWordForTrue(game: string) {
