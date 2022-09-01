@@ -59,7 +59,6 @@
 	margin: 0;
 }
 
-
 #login fieldset {
 	display: block;
 	margin: 0;
@@ -139,6 +138,7 @@
 	position: relative;
 	transition: 0.6s;
 	transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
 }
 
 .form-login, 
