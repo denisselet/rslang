@@ -1,30 +1,29 @@
+import { Word } from '../../../../types/Word';
 import './style.css';
-import StarIcon from '../assets/images/star_rate.svg';
 import SoundOnIcon from '../assets/images/music_note-on.svg';
 import SoundOffIcon from '../assets/images/music_note-off.svg';
 import WordSoundIcon from '../assets/images/volume_down.svg';
 import WordSoundOnIcon from '../assets/images/volume_up.svg';
 import RightAnswerSound from '../assets/audio/right-answer.mp3';
 import WrongAnswerSound from '../assets/audio/wrong-answer.mp3';
-import { Word } from '../../../../types/Word';
 
-class SprintView {
+class AudioCallView {
   private bodyKeyboardListenerFn: ((event: KeyboardEvent) => void) | undefined;
 
-  draw(onCorrect: () => void, onIncorrect: () => void) {
-    let main = document.getElementById('game-container');
+  draw(onAnswer: (translation: string) => void) {
+    let main = document.getElementById('audiocall-game-container');
     if (!main) {
       main = document.createElement('main');
-      main.id = 'game-container';
+      main.id = 'audiocall-game-container';
       const content = document.querySelector('.mutable-content-wrapper');
       content.append(main);
     }
     const game = document.createElement('div');
-    game.id = 'game';
+    game.id = 'audiocall-game';
     main.append(game);
-    const gameControls = this.getGameControls(onCorrect, onIncorrect);
+    const gameControls = this.getGameControls(onAnswer);
     const gameHeader = document.createElement('div');
-    gameHeader.className = 'game__game-header';
+    gameHeader.className = 'audiocall-game__game-header';
 
     const soundEl = document.createElement('button');
     soundEl.id = 'game-sound-btn';
@@ -40,107 +39,89 @@ class SprintView {
       });
     });
 
-    const scoreEl = document.createElement('span');
-    scoreEl.id = 'game-score';
-    const wordSoundBtn = document.createElement('button');
-    wordSoundBtn.id = 'word-sound-btn';
-    wordSoundBtn.innerHTML = WordSoundIcon;
-    const wordSoundEl = document.createElement('audio');
-    wordSoundEl.id = 'word-sound';
-    wordSoundBtn.addEventListener('click', () => {
-      wordSoundEl.play();
-      wordSoundBtn.innerHTML = WordSoundOnIcon;
-      setTimeout(() => { wordSoundBtn.innerHTML = WordSoundIcon; }, 1000);
-    });
-
-    const receivedScore = document.createElement('span');
-    receivedScore.id = 'received-score';
-
-    const scoreBooster = this.getScoreBooster();
     const wordContainer = document.createElement('div');
-    wordContainer.id = 'word-container';
+    wordContainer.id = 'audiocall-word-container';
     gameHeader.append(soundEl);
-    gameHeader.append(scoreEl);
-    gameHeader.append(wordSoundBtn);
-    gameHeader.append(wordSoundEl);
     game.append(gameHeader);
-    game.append(receivedScore);
-    game.append(scoreBooster);
     game.append(wordContainer);
     game.append(gameControls);
   }
 
-  drawTimer(timer: number) {
-    let timerEl = document.getElementById('game-timer');
-    if (!timerEl) {
-      timerEl = document.createElement('span');
-      timerEl.id = 'game-timer';
-      document.getElementById('game-container')?.append(timerEl);
-    }
-    timerEl.innerText = timer.toString();
-  }
-
-  drawWord(word: string, wordTranslate: string, audio: string, score: number, stars: number) {
-    const wordContainer = document.getElementById('word-container') as HTMLElement;
+  drawWord(audio: string, translations: string[], onAnswer: (translation: string) => void) {
+    const wordContainer = document.getElementById('audiocall-word-container') as HTMLElement;
     if (wordContainer) {
       wordContainer.innerHTML = '';
     }
-    Array.from(document.querySelectorAll('.stars-container__star'))
-      .forEach((el: Element, index: number) => {
-        // eslint-disable-next-line no-param-reassign
-        (el as HTMLSpanElement).style.fill = stars >= index + 1 ? 'gold' : 'lightgray';
+    const wordAudio = document.createElement('audio');
+    wordAudio.src = audio;
+    const wordAudioBtn = document.createElement('button');
+    wordAudioBtn.classList.add('audiocall-word-audio-btn');
+    wordAudio.play();
+    wordAudioBtn.innerHTML = WordSoundOnIcon;
+    setTimeout(() => { wordAudioBtn.innerHTML = WordSoundIcon; }, 1000);
+    wordAudioBtn.addEventListener('click', () => {
+      wordAudio.play();
+      wordAudioBtn.innerHTML = WordSoundOnIcon;
+      setTimeout(() => { wordAudioBtn.innerHTML = WordSoundIcon; }, 1000);
+    });
+    const translationsContainer = document.createElement('div');
+    translationsContainer.classList.add('audiocall-translation-controls');
+    translations.forEach((translation) => {
+      const translationEl = document.createElement('button');
+      translationEl.classList.add('audiocall-translation-controls__answer-button');
+      translationEl.addEventListener('click', () => {
+        onAnswer(translation);
       });
+      translationEl.innerText = translation;
+      translationsContainer.append(translationEl);
+    });
+    const nextBtn = document.createElement('button');
+    nextBtn.id = 'next-btn';
+    nextBtn.className = 'audiocall-controls__btn audiocall-controls__btn-true';
+    nextBtn.innerText = 'Не знаю';
+    nextBtn.addEventListener('click', () => onAnswer(undefined));
+    wordContainer.append(wordAudio);
+    wordContainer.append(wordAudioBtn);
+    wordContainer.append(translationsContainer);
+    wordContainer.append(nextBtn);
+  }
+
+  drawAnswerResult(onNextClick: () => void, word: string, translation: string, image: string) {
+    Array.from(document.querySelector('.audiocall-translation-controls').children).forEach((btn) => {
+      // eslint-disable-next-line no-param-reassign
+      (btn as HTMLButtonElement).disabled = true;
+      btn.classList.add(
+        (btn as HTMLButtonElement).innerText === translation ? 'audiocall-btn__correct-answer' : 'audiocall-btn__incorrect-answer'
+      );
+    });
+    const nextBtn = document.getElementById('next-btn');
+    const nextBtnClone = nextBtn.cloneNode(true) as HTMLElement;
+    nextBtnClone.innerText = 'Дальше';
+    nextBtn.remove();
+    document.getElementById('audiocall-word-container')?.append(nextBtnClone);
+    nextBtnClone.addEventListener('click', () => onNextClick());
+    const container = document.getElementById('audiocall-word-container');
+    const imageEl = document.createElement('img');
+    imageEl?.classList.add('audiocall-translation-img');
+    imageEl.src = image;
     const wordEl = document.createElement('span');
     wordEl.innerText = word;
-    wordEl.className = 'word-eng';
-    (document.getElementById('word-sound') as HTMLAudioElement).src = audio;
-    const wordTranslateEl = document.createElement('span');
-    wordTranslateEl.innerText = wordTranslate;
-    const scoreEl = document.getElementById('game-score') as HTMLElement;
-    scoreEl.innerText = score.toString();
-    wordContainer.append(wordEl);
-    wordContainer.append(wordTranslateEl);
+    container.prepend(wordEl);
+    container.prepend(imageEl);
   }
 
-  getScoreBooster() {
-    const scoreBooster = document.querySelector('.score-booster');
-    if (scoreBooster) {
-      scoreBooster.remove();
-    }
-    const scoreBoosterContainer = document.createElement('div');
-    scoreBoosterContainer.className = 'score-booster';
-    const stars = document.createElement('div');
-    stars.className = 'score-booster__stars-container';
-    for (let i = 0; i < 3; i += 1) {
-      const star = document.createElement('span');
-      star.innerHTML = StarIcon;
-      star.className = 'stars-container__star';
-      stars.append(star);
-    }
-    scoreBoosterContainer.append(stars);
-    return scoreBoosterContainer;
-  }
-
-  getGameControls(onCorrect: () => void, onIncorrect: () => void) {
+  getGameControls(onAnswer: (translation: string) => void) {
     const controls = document.createElement('div');
     controls.className = 'controls';
     this.bodyKeyboardListenerFn = (event: KeyboardEvent) => {
       if (event.code === 'ArrowRight') {
-        onIncorrect();
+        // onAnswer();
       }
       if (event.code === 'ArrowLeft') {
-        onCorrect();
+        // onAnswer();
       }
     };
     document.body.addEventListener('keydown', this.bodyKeyboardListenerFn);
-    const trueButton = document.createElement('button');
-    trueButton.className = 'controls__btn controls__btn-true';
-    trueButton.innerText = 'Верно';
-    trueButton.addEventListener('click', () => onCorrect());
-    const falseButton = document.createElement('button');
-    falseButton.className = 'controls__btn controls__btn-false';
-    falseButton.innerText = 'Неверно';
-    falseButton.addEventListener('click', () => onIncorrect());
     const correctAudio = document.createElement('audio');
     correctAudio.id = 'correct-sound';
     const incorrectAudio = document.createElement('audio');
@@ -149,8 +130,6 @@ class SprintView {
     incorrectAudio.src = WrongAnswerSound;
     controls.append(correctAudio);
     controls.append(incorrectAudio);
-    controls.append(trueButton);
-    controls.append(falseButton);
     return controls;
   }
 
@@ -162,11 +141,7 @@ class SprintView {
   ) {
     document.body.removeEventListener('keydown', this.bodyKeyboardListenerFn as (event: KeyboardEvent) => void);
     const finishGame = document.createElement('div');
-    finishGame.id = 'finish-game-container';
-    const scoreTitle = document.createElement('div');
-    scoreTitle.innerText = `Твой результат ${score} очков`;
-    scoreTitle.className = 'finish-game__title';
-    finishGame.append(scoreTitle);
+    finishGame.id = 'audiocall-finish-game-container';
 
     const gameStatisticContainer = document.createElement('div');
     gameStatisticContainer.className = 'finish-game__statistic';
@@ -198,7 +173,7 @@ class SprintView {
     restart.innerText = 'Начать заново';
     restart.className = 'finish-btns__restart';
     restart.addEventListener('click', () => {
-      document.getElementById('game-container').remove();
+      document.getElementById('audiocall-game-container').remove();
       onRestartGame();
     });
     finishGameBtns.append(restart);
@@ -211,7 +186,7 @@ class SprintView {
 
     setTimeout(() => {
       [...document.querySelectorAll('audio')].forEach((el) => el?.pause());
-      const gameContainer = document.getElementById('game-container') as HTMLElement;
+      const gameContainer = document.getElementById('audiocall-game-container') as HTMLElement;
       gameContainer.innerHTML = '';
       gameContainer.append(finishGame);
     }, 500);
@@ -239,11 +214,11 @@ class SprintView {
 
   getAnswersSection(answers: { word: Word, isCorrect: boolean }[]): HTMLElement {
     const container = document.createElement('div');
-    container.className = 'answers-container';
+    container.className = 'audiocall-answers-container';
     const correctAnswers = answers.filter(({ isCorrect }) => isCorrect).map(({ word }) => word);
     const correctTitle = document.createElement('div');
     correctTitle.innerText = `Знаю - ${correctAnswers.length}`;
-    correctTitle.className = 'answers-container__title';
+    correctTitle.className = 'audiocall-answers-container__title';
     container.append(correctTitle);
     correctAnswers.forEach((word) => {
       container.append(this.getAnswer(word));
@@ -251,7 +226,7 @@ class SprintView {
     const incorrectAnswers = answers.filter(({ isCorrect }) => !isCorrect).map(({ word }) => word);
     const incorrectTitle = document.createElement('div');
     incorrectTitle.innerText = `Стоит повторить - ${incorrectAnswers.length}`;
-    incorrectTitle.className = 'answers-container__title';
+    incorrectTitle.className = 'audiocall-answers-container__title';
     container.append(incorrectTitle);
     incorrectAnswers.forEach((word) => {
       container.append(this.getAnswer(word));
@@ -261,36 +236,36 @@ class SprintView {
 
   drawCorrectAnswer() {
     (document.getElementById('correct-sound') as HTMLAudioElement).play();
-    const gameEl = document.getElementById('game');
-    gameEl?.classList.add('game__correct-answer');
+    const gameEl = document.getElementById('audiocall-game');
+    gameEl?.classList.add('audiocall-game__correct-answer');
     setTimeout(() => {
-      gameEl?.classList.remove('game__correct-answer');
+      gameEl?.classList.remove('audiocall-game__correct-answer');
     }, 500);
   }
 
   drawIncorrectAnswer() {
     (document.getElementById('incorrect-sound') as HTMLAudioElement).play();
-    const gameEl = document.getElementById('game');
-    gameEl?.classList.add('game__incorrect-answer');
+    const gameEl = document.getElementById('audiocall-game');
+    gameEl?.classList.add('audiocall-game__incorrect-answer');
     setTimeout(() => {
-      gameEl?.classList.remove('game__incorrect-answer');
+      gameEl?.classList.remove('audiocall-game__incorrect-answer');
     }, 500);
   }
 
   drawGameLevelSelector(onSelect: (group: number) => void) {
     const main = document.createElement('main');
-    main.id = 'game-container';
+    main.id = 'audiocall-game-container';
     document.querySelector('.mutable-content-wrapper').append(main);
-    const sprintStart = document.createElement('div');
-    sprintStart.id = 'sprint-start-screen';
-    main.append(sprintStart);
+    const audioCallStart = document.createElement('div');
+    audioCallStart.id = 'audiocall-start-screen';
+    main.append(audioCallStart);
     const levelHeader = document.createElement('h2');
-    levelHeader.innerText = 'СПРИНТ';
+    levelHeader.innerText = 'АУДИОВЫЗОВ';
     const level = document.createElement('span');
     level.className = 'level-message';
     level.innerText = 'Выбери уровень сложности, чтобы начать игру';
-    sprintStart.append(levelHeader);
-    sprintStart.append(level);
+    audioCallStart.append(levelHeader);
+    audioCallStart.append(level);
     const groups = 6;
     new Array(groups).fill(0).forEach((el, index) => {
       const btn = document.createElement('button');
@@ -324,7 +299,7 @@ class SprintView {
           break;
       }
       btn.dataset.value = index.toString();
-      sprintStart.append(btn);
+      audioCallStart.append(btn);
     });
     main.addEventListener('click', (event) => {
       const btn = (event.target as HTMLElement).closest('button');
@@ -334,17 +309,9 @@ class SprintView {
     });
   }
 
-  drawReceivedScore(receivedScore: number) {
-    const receivedScoreEl = document.getElementById('received-score') as HTMLSpanElement;
-    receivedScoreEl.innerText = `+${receivedScore}`;
-    setTimeout(() => {
-      receivedScoreEl.innerText = '';
-    }, 500);
-  }
-
   showLoading() {
     const main = document.createElement('main');
-    main.id = 'game-container';
+    main.id = 'audiocall-game-container';
     document.querySelector('.mutable-content-wrapper').append(main);
     const header = document.createElement('h2');
     header.id = 'loading-indicator';
@@ -357,4 +324,4 @@ class SprintView {
   }
 }
 
-export default SprintView;
+export default AudioCallView;
