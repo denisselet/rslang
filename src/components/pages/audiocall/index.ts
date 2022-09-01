@@ -1,16 +1,16 @@
 import { Word } from '../../../types/Word';
 import Service from '../../constants/service';
 import WordsService from '../../services/words-service';
-import SprintView from './view';
+import AudioCallView from './view';
 
-class Sprint {
-  private static gameName = 'sprint';
+class AudioCall {
+  private static gameName = 'audiocall';
 
   private vocabularyGroup: number | undefined;
 
   private vocabularyPage: number | undefined;
 
-  private sprintView;
+  private audioCallView: AudioCallView;
 
   private score;
 
@@ -19,8 +19,6 @@ class Sprint {
   private currentWordIndex: number;
 
   private isCurrentWordCorrect: boolean;
-
-  private timer: number;
 
   private correctAnswersInLine: number;
 
@@ -31,12 +29,11 @@ class Sprint {
   private maxCorrectAnswers: number;
 
   constructor() {
-    this.sprintView = new SprintView();
+    this.audioCallView = new AudioCallView();
     this.score = 0;
     this.currentWordIndex = 0;
     this.words = [];
     this.isCurrentWordCorrect = true;
-    this.timer = 60;
     this.correctAnswersInLine = 0;
     this.maxCorrectAnswers = 0;
     this.isMuted = false;
@@ -49,22 +46,8 @@ class Sprint {
       this.vocabularyPage = vocabularyPage;
       this.startGame();
     } else {
-      this.sprintView.drawGameLevelSelector(this.onGameLevelSelect.bind(this));
+      this.audioCallView.drawGameLevelSelector(this.onGameLevelSelect.bind(this));
     }
-  }
-
-  private onTimerChange() {
-    setTimeout(() => {
-      if (this.timer > 0 && this.currentWordIndex < this.words.length) {
-        this.timer -= 1;
-        this.sprintView.drawTimer(this.timer);
-        this.onTimerChange();
-        return;
-      }
-      if (this.currentWordIndex < this.words.length) {
-        this.finishGame();
-      }
-    }, 1000);
   }
 
   private startGame() {
@@ -72,8 +55,7 @@ class Sprint {
     this.score = 0;
     this.currentWordIndex = 0;
     this.correctAnswersInLine = 0;
-    this.sprintView.showLoading();
-    this.timer = 60;
+    this.audioCallView.showLoading();
     const lastPage = this.vocabularyPage as number;
     Promise.all(Array.from(Array(lastPage + 1).keys()).map(
       (page) => WordsService.getWords(this.vocabularyGroup, page)
@@ -83,20 +65,20 @@ class Sprint {
         ...lastPageWords.sort(() => (Math.random() > 0.5) ? 1 : -1),
         ...restWords.flat().sort(() => (Math.random() > 0.5) ? 1 : -1)
       ];
-      this.sprintView.draw(
-        this.onCorrect.bind(this),
-        this.onIncorrect.bind(this)
+      if (this.words.length < 20) {
+        // TODO: show error screen
+      }
+      this.audioCallView.draw(
+        this.onAnswer.bind(this)
       );
-      this.sprintView.hideLoading();
-      this.onTimerChange();
+      this.audioCallView.hideLoading();
       this.nextWord();
-      this.sprintView.drawTimer(this.timer);
     });
   }
 
   private finishGame() {
     if (this.words.length) {
-      this.sprintView.finishGame(
+      this.audioCallView.finishGame(
         this.score,
         this.answers,
         this.onRestartGame.bind(this),
@@ -117,71 +99,51 @@ class Sprint {
   }
 
   private nextWord() {
-    if (this.currentWordIndex >= this.words.length) {
+    if (this.currentWordIndex >= 20) {
       this.finishGame();
       return;
     }
-    const shouldTranslationBeCorrect = Math.random() > 0.5;
-    const translation = shouldTranslationBeCorrect
-      ? this.words[this.currentWordIndex].wordTranslate
-      : this.words[Math.floor(Math.random() * this.words.length)].wordTranslate;
-    this.sprintView.drawWord(
-      this.words[this.currentWordIndex].word,
-      translation,
+    const translations = [
+      this.words[this.currentWordIndex].wordTranslate,
+      this.words[Math.floor(Math.random() * this.words.length)].wordTranslate,
+      this.words[Math.floor(Math.random() * this.words.length)].wordTranslate,
+      this.words[Math.floor(Math.random() * this.words.length)].wordTranslate,
+      this.words[Math.floor(Math.random() * this.words.length)].wordTranslate
+    ].sort(() => (Math.random() > 0.5) ? 1 : -1);
+    this.audioCallView.drawWord(
       `${Service.LINK}/${this.words[this.currentWordIndex].audio}`,
-      this.score,
-      this.correctAnswersInLine / 3
+      translations,
+      this.onAnswer.bind(this)
     );
-    this.isCurrentWordCorrect = translation === this.words[this.currentWordIndex].wordTranslate;
   }
 
-  private changeScore(isAnswerCorrect: boolean) {
+  private onAnswer(translation: string) {
+    const correctTranslation = this.words[this.currentWordIndex].wordTranslate;
+    this.audioCallView.drawAnswerResult(
+      this.nextWord.bind(this),
+      this.words[this.currentWordIndex].word,
+      correctTranslation,
+      `${Service.LINK}/${this.words[this.currentWordIndex].image}`
+    );
+    const isAnswerCorrect = correctTranslation === translation;
     const word = { ...this.words[this.currentWordIndex], audio: `${Service.LINK}/${this.words[this.currentWordIndex].audio}` };
     this.answers.push({ word, isCorrect: isAnswerCorrect });
     if (isAnswerCorrect) {
-      this.sprintView.drawCorrectAnswer();
-      let multiplier;
-      switch (true) {
-        case this.correctAnswersInLine >= 9:
-          multiplier = 8;
-          break;
-        case this.correctAnswersInLine >= 6:
-          multiplier = 4;
-          break;
-        case this.correctAnswersInLine >= 3:
-          multiplier = 2;
-          break;
-        default:
-          multiplier = 1;
-      }
-      const receivedScore = 10 * multiplier;
-      this.score += receivedScore;
-      this.sprintView.drawReceivedScore(receivedScore);
+      this.audioCallView.drawCorrectAnswer();
       this.correctAnswersInLine += 1;
-      return;
+    } else {
+      this.audioCallView.drawIncorrectAnswer();
+      this.maxCorrectAnswers = this.maxCorrectAnswers < this.correctAnswersInLine
+        ? this.correctAnswersInLine : this.maxCorrectAnswers;
+      this.correctAnswersInLine = 0;
     }
-    this.sprintView.drawIncorrectAnswer();
-    this.maxCorrectAnswers = this.maxCorrectAnswers < this.correctAnswersInLine
-      ? this.correctAnswersInLine : this.maxCorrectAnswers;
-    this.correctAnswersInLine = 0;
-  }
-
-  private onCorrect() {
-    this.changeScore(this.isCurrentWordCorrect === true);
     this.currentWordIndex += 1;
-    this.nextWord();
-  }
-
-  private onIncorrect() {
-    this.changeScore(this.isCurrentWordCorrect === false);
-    this.currentWordIndex += 1;
-    this.nextWord();
   }
 
   private onGameLevelSelect(group: number) {
     this.vocabularyGroup = group;
     this.vocabularyPage = 29;
-    window.location.pathname = `/sprint/${this.vocabularyGroup}/${this.vocabularyPage}`;
+    window.location.pathname = `/audiocall/${this.vocabularyGroup}/${this.vocabularyPage}`;
   }
 
   private onClose() {
@@ -193,4 +155,4 @@ class Sprint {
   }
 }
 
-export default Sprint;
+export default AudioCall;

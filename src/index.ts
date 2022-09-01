@@ -3,6 +3,7 @@ import Navigo from 'navigo';
 import { FooterService } from './components/common/footer';
 import { HeaderService } from './components/common/header';
 import { LoginService } from './components/common/login';
+import AudioCall from './components/pages/audiocall';
 import { HomeService } from './components/pages/home';
 import Sprint from './components/pages/sprint';
 import { StatisticsService } from './components/pages/statistics';
@@ -17,6 +18,7 @@ class Main {
     const home = new HomeService();
     const statistic = new StatisticsService();
     const sprint = new Sprint();
+    const audioCall = new AudioCall();
     const footer = new FooterService();
     const textbook = new TextbookService();
 
@@ -38,6 +40,14 @@ class Main {
       })
       .on('/sprint/?', () => {
         sprint.start();
+      })
+      .on('/audiocall/:group/:page', ({ data }) => {
+        const group = Number.isInteger(Number(data.group)) ? Number(data.group) : undefined;
+        const page = Number.isInteger(Number(data.page)) ? Number(data.page) : undefined;
+        audioCall.start(group, page);
+      })
+      .on('/audiocall/?', () => {
+        audioCall.start();
       })
       .on('/textbook', () => {
         textbook.start();
