@@ -1,4 +1,4 @@
-import { Word } from '../../../../types/Word';
+import { IWord } from '../../../../types/game';
 import './style.css';
 import SoundOnIcon from '../assets/images/music_note-on.svg';
 import SoundOffIcon from '../assets/images/music_note-off.svg';
@@ -10,7 +10,7 @@ import WrongAnswerSound from '../assets/audio/wrong-answer.mp3';
 class AudioCallView {
   private bodyKeyboardListenerFn: ((event: KeyboardEvent) => void) | undefined;
 
-  draw(onAnswer: (translation: string) => void) {
+  draw() {
     let main = document.getElementById('audiocall-game-container');
     if (!main) {
       main = document.createElement('main');
@@ -21,7 +21,7 @@ class AudioCallView {
     const game = document.createElement('div');
     game.id = 'audiocall-game';
     main.append(game);
-    const gameControls = this.getGameControls(onAnswer);
+    const gameControls = this.getGameControls();
     const gameHeader = document.createElement('div');
     gameHeader.className = 'audiocall-game__game-header';
 
@@ -33,9 +33,9 @@ class AudioCallView {
       const btn = document.getElementById('game-sound-btn') as HTMLButtonElement;
       btn.dataset.muted = btn.dataset.muted === 'muted' ? 'unmuted' : 'muted';
       btn.innerHTML = btn.dataset.muted === 'muted' ? SoundOffIcon : SoundOnIcon;
-      document.querySelectorAll('audio').forEach((el) => {
+      document.querySelectorAll('.controls audio').forEach((el) => {
         // eslint-disable-next-line no-param-reassign
-        el.muted = btn.dataset.muted === 'muted';
+        (el as HTMLAudioElement).muted = btn.dataset.muted === 'muted';
       });
     });
 
@@ -45,6 +45,46 @@ class AudioCallView {
     game.append(gameHeader);
     game.append(wordContainer);
     game.append(gameControls);
+  }
+
+  setKeyboardAnswerListener(onAnswer: (translation: string) => void) {
+    if (this.bodyKeyboardListenerFn) {
+      document.body.removeEventListener('keydown', this.bodyKeyboardListenerFn as (event: KeyboardEvent) => void);
+    }
+    this.bodyKeyboardListenerFn = (event: KeyboardEvent) => {
+      switch (event.code) {
+        case 'Digit1':
+        case 'Digit2':
+        case 'Digit3':
+        case 'Digit4':
+        case 'Digit5': {
+          const buttonIndex = Number(Array.from(event.code).pop()) - 1;
+          const button = (document
+            .querySelectorAll('.audiocall-translation-controls__answer-button')[buttonIndex] as HTMLButtonElement);
+          onAnswer(button.dataset.translation);
+          break;
+        }
+        case 'Space': {
+          onAnswer(undefined);
+          break;
+        }
+        default:
+          break;
+      }
+    };
+    document.body.addEventListener('keydown', this.bodyKeyboardListenerFn);
+  }
+
+  setKeyboardAnswerResultListener(onNext: () => void) {
+    if (this.bodyKeyboardListenerFn) {
+      document.body.removeEventListener('keydown', this.bodyKeyboardListenerFn as (event: KeyboardEvent) => void);
+    }
+    this.bodyKeyboardListenerFn = (event: KeyboardEvent) => {
+      if (event.code === 'Space') {
+        onNext();
+      }
+    };
+    document.body.addEventListener('keydown', this.bodyKeyboardListenerFn);
   }
 
   drawWord(audio: string, translations: string[], onAnswer: (translation: string) => void) {
@@ -72,7 +112,8 @@ class AudioCallView {
       translationEl.addEventListener('click', () => {
         onAnswer(translation);
       });
-      translationEl.innerText = translation;
+      translationEl.innerText = `${translations.indexOf(translation) + 1} ${translation}`;
+      translationEl.dataset.translation = translation;
       translationsContainer.append(translationEl);
     });
     const nextBtn = document.createElement('button');
@@ -84,6 +125,7 @@ class AudioCallView {
     wordContainer.append(wordAudioBtn);
     wordContainer.append(translationsContainer);
     wordContainer.append(nextBtn);
+    this.setKeyboardAnswerListener(onAnswer);
   }
 
   drawAnswerResult(onNextClick: () => void, word: string, translation: string, image: string) {
@@ -91,7 +133,7 @@ class AudioCallView {
       // eslint-disable-next-line no-param-reassign
       (btn as HTMLButtonElement).disabled = true;
       btn.classList.add(
-        (btn as HTMLButtonElement).innerText === translation ? 'audiocall-btn__correct-answer' : 'audiocall-btn__incorrect-answer'
+        (btn as HTMLButtonElement).dataset.translation === translation ? 'audiocall-btn__correct-answer' : 'audiocall-btn__incorrect-answer'
       );
     });
     const nextBtn = document.getElementById('next-btn');
@@ -108,20 +150,12 @@ class AudioCallView {
     wordEl.innerText = word;
     container.prepend(wordEl);
     container.prepend(imageEl);
+    this.setKeyboardAnswerResultListener(onNextClick);
   }
 
-  getGameControls(onAnswer: (translation: string) => void) {
+  getGameControls() {
     const controls = document.createElement('div');
     controls.className = 'controls';
-    this.bodyKeyboardListenerFn = (event: KeyboardEvent) => {
-      if (event.code === 'ArrowRight') {
-        // onAnswer();
-      }
-      if (event.code === 'ArrowLeft') {
-        // onAnswer();
-      }
-    };
-    document.body.addEventListener('keydown', this.bodyKeyboardListenerFn);
     const correctAudio = document.createElement('audio');
     correctAudio.id = 'correct-sound';
     const incorrectAudio = document.createElement('audio');
@@ -134,8 +168,7 @@ class AudioCallView {
   }
 
   finishGame(
-    score: number,
-    answers: { word: Word, isCorrect: boolean }[],
+    answers: { word: IWord, isCorrect: boolean }[],
     onRestartGame: () => void,
     onClose: () => void
   ) {
@@ -192,7 +225,7 @@ class AudioCallView {
     }, 500);
   }
 
-  getAnswer({ word, wordTranslate, audio }: Word): HTMLElement {
+  getAnswer({ word, wordTranslate, audio }: IWord): HTMLElement {
     const wordContainer = document.createElement('div');
     wordContainer.className = 'word-in-result-container';
     const wordSoundBtn = document.createElement('button');
@@ -212,7 +245,7 @@ class AudioCallView {
     return wordContainer;
   }
 
-  getAnswersSection(answers: { word: Word, isCorrect: boolean }[]): HTMLElement {
+  getAnswersSection(answers: { word: IWord, isCorrect: boolean }[]): HTMLElement {
     const container = document.createElement('div');
     container.className = 'audiocall-answers-container';
     const correctAnswers = answers.filter(({ isCorrect }) => isCorrect).map(({ word }) => word);

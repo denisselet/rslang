@@ -1,6 +1,7 @@
-import { Word } from '../../../types/Word';
+import { IWord } from '../../../types/game';
 import Service from '../../constants/service';
 import WordsService from '../../services/words-service';
+import { addWordAndStatistic } from '../../user/sendWordStat';
 import SprintView from './view';
 
 class Sprint {
@@ -14,7 +15,7 @@ class Sprint {
 
   private score;
 
-  private words: Word[];
+  private words: IWord[];
 
   private currentWordIndex: number;
 
@@ -26,7 +27,7 @@ class Sprint {
 
   private isMuted: boolean;
 
-  private answers: Array<{ word: Word, isCorrect: boolean }>;
+  private answers: Array<{ word: IWord, isCorrect: boolean }>;
 
   private maxCorrectAnswers: number;
 
@@ -44,7 +45,7 @@ class Sprint {
   }
 
   start(vocabularyGroup?: number, vocabularyPage?: number) {
-    if (vocabularyGroup !== undefined && vocabularyPage !== undefined) {
+    if (vocabularyGroup !== undefined) {
       this.vocabularyGroup = vocabularyGroup;
       this.vocabularyPage = vocabularyPage;
       this.startGame();
@@ -67,6 +68,23 @@ class Sprint {
     }, 1000);
   }
 
+  private loadWords(group: number, page: number | undefined): Promise<void> {
+    const lastPage = page === undefined ? 29 : page;
+    return Promise.all(Array.from(Array(lastPage + 1).keys()).map(
+      (wordsPage) => WordsService.getWords(group, wordsPage)
+    )).then((words) => {
+      if (page !== undefined) {
+        const [lastPageWords, ...restWords] = words.reverse();
+        this.words = [
+          ...lastPageWords.sort(() => (Math.random() > 0.5) ? 1 : -1),
+          ...restWords.flat().sort(() => (Math.random() > 0.5) ? 1 : -1)
+        ];
+      } else {
+        this.words = words.flat().sort(() => (Math.random() > 0.5) ? 1 : -1);
+      }
+    });
+  }
+
   private startGame() {
     this.answers = [];
     this.score = 0;
@@ -74,15 +92,7 @@ class Sprint {
     this.correctAnswersInLine = 0;
     this.sprintView.showLoading();
     this.timer = 60;
-    const lastPage = this.vocabularyPage as number;
-    Promise.all(Array.from(Array(lastPage + 1).keys()).map(
-      (page) => WordsService.getWords(this.vocabularyGroup, page)
-    )).then((words) => {
-      const [lastPageWords, ...restWords] = words.reverse();
-      this.words = [
-        ...lastPageWords.sort(() => (Math.random() > 0.5) ? 1 : -1),
-        ...restWords.flat().sort(() => (Math.random() > 0.5) ? 1 : -1)
-      ];
+    this.loadWords(this.vocabularyGroup, this.vocabularyPage).then(() => {
       this.sprintView.draw(
         this.onCorrect.bind(this),
         this.onIncorrect.bind(this)
@@ -108,11 +118,9 @@ class Sprint {
       const incorrectWords = this.answers
         .filter(({ isCorrect }) => !isCorrect)
         .map(({ word: { id } }) => id);
-      // TODO: change method once implemented
-      // addWordAndStatistic(correctWords, incorrectWords, Sprint.gameName)
       this.maxCorrectAnswers = this.maxCorrectAnswers < this.correctAnswersInLine
         ? this.correctAnswersInLine : this.maxCorrectAnswers;
-      // TODO: send maxCorrectAnswers to server
+      addWordAndStatistic(correctWords, incorrectWords, Sprint.gameName, this.maxCorrectAnswers);
     }
   }
 
@@ -136,7 +144,7 @@ class Sprint {
   }
 
   private changeScore(isAnswerCorrect: boolean) {
-    const word = { ...this.words[this.currentWordIndex], audio: `${Service.LINK}/${this.words[this.currentWordIndex].audio}` };
+    const word = { ...this.words[this.currentWordIndex], audio: `${Service.LINK}/${this.words[this.currentWordIndex]?.audio}` };
     this.answers.push({ word, isCorrect: isAnswerCorrect });
     if (isAnswerCorrect) {
       this.sprintView.drawCorrectAnswer();
@@ -180,8 +188,7 @@ class Sprint {
 
   private onGameLevelSelect(group: number) {
     this.vocabularyGroup = group;
-    this.vocabularyPage = 29;
-    window.location.pathname = `/sprint/${this.vocabularyGroup}/${this.vocabularyPage}`;
+    window.location.pathname = `/sprint/${this.vocabularyGroup}`;
   }
 
   private onClose() {
