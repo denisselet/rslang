@@ -23,7 +23,7 @@ class RequestService {
     try {
       const response = await this.response(url, HttpMethod.GET);
       if (response.status === 404) {
-        throw new Error();
+        return response;
       }
       return response.json();
     } catch (err) {
