@@ -40,6 +40,7 @@
     "webpack-dev-server": "^4.9.3"
   },
   "dependencies": {
+    "chart.js": "^3.9.1",
     "navigo": "^8.11.1"
   }
 }

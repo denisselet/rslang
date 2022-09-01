@@ -57,8 +57,8 @@ class Main {
   }
 
   private static commonComponents() {
-    const header = new HeaderService();
     const login = new LoginService();
+    const header = new HeaderService();
 
     login.start();
     header.start();
