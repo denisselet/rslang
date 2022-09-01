@@ -13,17 +13,11 @@ class AudioCall {
 
   private audioCallView: AudioCallView;
 
-  private score;
-
   private words: IWord[];
 
   private currentWordIndex: number;
 
-  private isCurrentWordCorrect: boolean;
-
   private correctAnswersInLine: number;
-
-  private isMuted: boolean;
 
   private answers: Array<{ word: IWord, isCorrect: boolean }>;
 
@@ -31,13 +25,10 @@ class AudioCall {
 
   constructor() {
     this.audioCallView = new AudioCallView();
-    this.score = 0;
     this.currentWordIndex = 0;
     this.words = [];
-    this.isCurrentWordCorrect = true;
     this.correctAnswersInLine = 0;
     this.maxCorrectAnswers = 0;
-    this.isMuted = false;
     this.answers = [];
   }
 
@@ -74,7 +65,6 @@ class AudioCall {
 
   private startGame() {
     this.answers = [];
-    this.score = 0;
     this.currentWordIndex = 0;
     this.correctAnswersInLine = 0;
     this.audioCallView.showLoading();
