@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import SignInService from '../services/signIn-service';
 import UsersService from '../services/users-service';
 
