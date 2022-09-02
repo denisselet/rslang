@@ -1,5 +1,25 @@
-import { Chart, registerables, ChartItem } from 'chart.js';
+import { Chart, ChartItem, registerables } from 'chart.js';
+import UserStatisticService from '../../../services/userStatistic-service';
+import { getDateToday } from '../../../user/date';
 import './style.scss';
+
+interface ILearnWordsEntity {
+    newWord: number;
+    proc: { true: number ; false: number };
+    row: number;
+}
+
+interface IOptionalData {
+    audioCall: ILearnWordsEntity;
+    sprint: ILearnWordsEntity;
+    learned: number;
+}
+
+interface IStatisticsDto {
+    id: string;
+    learnedWords: number;
+    optional: Record<string, IOptionalData>;
+}
 
 interface IDataForGraphForOneDay {
     days: string[];
@@ -9,52 +29,99 @@ interface IDataForGraphForOneDay {
 interface IDrawData {
     element: string;
     title: string;
-    apiMethod: () => IDataForGraphForOneDay;
+    data: IDataForGraphForOneDay;
     labelText: string;
 }
 
 export class StatisticsView {
+  private tableData: IOptionalData;
+
+  private graphForNewWordData: IDataForGraphForOneDay;
+
+  private graphForTotalWordsData: IDataForGraphForOneDay;
+
   constructor() {
+    this.tableData = this.getDefaultSetting();
+    this.graphForNewWordData = { days: [], wordsForDay: [] };
+    this.graphForTotalWordsData = { days: [], wordsForDay: [] };
+
     Chart.register(...registerables);
   }
 
-  public draw(): void {
-    const template = this.getTemplate();
+  public async draw(): Promise<void> {
     const content = document.querySelector('.mutable-content-wrapper');
     content.innerHTML = '';
+
+    await this.getData();
+
+    const template = this.getTemplate();
 
     content.insertAdjacentHTML('beforeend', template);
     this.drawGraphs();
   }
 
+  private async getData(): Promise<void> {
+    const today = getDateToday();
+    try {
+      const stats: IStatisticsDto = await UserStatisticService.getStatistic();
+      this.tableData = stats.optional[today];
+
+      this.graphForNewWordData = this.mapDataForGraphNewWords(stats);
+      this.graphForTotalWordsData = this.mapDataForGraphLearned(stats);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  private getDefaultSetting(): IOptionalData {
+    return {
+      audioCall: { newWord: 0, proc: { true: 0, false: 0 }, row: 0 },
+      learned: 0,
+      sprint: { newWord: 0, proc: { true: 0, false: 0 }, row: 0 }
+    };
+  }
+
   private drawGraphs(): void {
-    this.drawGraphChartWordsForOneDay({
-      apiMethod: () => this.getDataForGraphForOneDay(),
+    this.drawChartWords({
+      data: this.graphForNewWordData,
       element: 'chart__words-for-day',
       labelText: 'Новых слов',
       title: 'Количество новых слов за каждый день изучения:'
     });
-    this.drawGraphChartWordsForOneDay({
-      apiMethod: () => this.getDataForGraphTotalWords(),
+    this.drawChartWords({
+      data: this.graphForTotalWordsData,
       element: 'chart__total-words',
       labelText: 'Изученных слов',
       title: 'Общее количество изученных слов за весь период обучения по дням:'
     });
   }
 
-  // TODO: change to real API method
-  private getDataForGraphForOneDay(): IDataForGraphForOneDay {
+  private mapDataForGraphNewWords(data: IStatisticsDto): IDataForGraphForOneDay {
+    const days = Object.keys(data.optional);
+    const wordsForDay = days.map((d) => {
+      const option = data.optional[d];
+      const newWords = option.audioCall.newWord + option.sprint.newWord;
+
+      return newWords;
+    });
+
     return {
-      days: ['01.08.2022', '02.08.2022', '03.08.2022', '04.08.2022', '05.08.2022', '06.08.2022', '07.08.2022'],
-      wordsForDay: [10, 15, 131, 2, 6, 50, 5]
+      days: days.map((d) => d.replace('D', '')),
+      wordsForDay
     };
   }
 
-  // TODO: change to real API method
-  private getDataForGraphTotalWords(): IDataForGraphForOneDay {
+  private mapDataForGraphLearned(data: IStatisticsDto): IDataForGraphForOneDay {
+    const days = Object.keys(data.optional);
+    const wordsForDay = days.map((d) => {
+      const option = data.optional[d];
+
+      return option.learned;
+    });
+
     return {
-      days: ['01.08.2022', '02.08.2022', '03.08.2022', '04.08.2022', '05.08.2022', '06.08.2022', '07.08.2022'],
-      wordsForDay: [40, 25, 121, 5, 1, 30, 80]
+      days: days.map((d) => d.replace('D', '')),
+      wordsForDay
     };
   }
 
@@ -62,24 +129,23 @@ export class StatisticsView {
     return Math.floor(Math.random() * max) + 1;
   }
 
-  private drawGraphChartWordsForOneDay(drawData: IDrawData) {
+  private async drawChartWords(drawData: IDrawData) {
     const chartWordsForDay = document.getElementById(drawData.element) as ChartItem;
-    // TODO
-    const data = drawData.apiMethod();
-    const getRandomBackgroundColor = data.days.map(() => `rgba(${this.generateRandomInteger(255)}, ${this.generateRandomInteger(255)}, ${this.generateRandomInteger(255)}, 0.7)`);
-    const getRandomBorderColor = data.days.map(() => `rgba(${this.generateRandomInteger(255)}, ${this.generateRandomInteger(255)}, ${this.generateRandomInteger(255)}, 0.7)`);
+    const getRandomBackgroundColor = drawData.data.days.map(() => `rgba(${this.generateRandomInteger(255)}, ${this.generateRandomInteger(255)}, ${this.generateRandomInteger(255)}, 0.7)`);
+    const getRandomBorderColor = drawData.data.days.map(() => `rgba(${this.generateRandomInteger(255)}, ${this.generateRandomInteger(255)}, ${this.generateRandomInteger(255)}, 0.7)`);
 
     // eslint-disable-next-line unused-imports/no-unused-vars
     const myChart = new Chart(chartWordsForDay, {
       type: 'bar',
       data: {
-        labels: data.days,
+        labels: drawData.data.days,
         datasets: [{
           label: drawData.labelText,
-          data: data.wordsForDay,
+          data: drawData.data.wordsForDay,
           backgroundColor: getRandomBackgroundColor,
           borderColor: getRandomBorderColor,
-          borderWidth: 1
+          borderWidth: 1,
+          barThickness: 40
         }]
       },
       options: {
@@ -106,6 +172,23 @@ export class StatisticsView {
   }
 
   private getTemplate(): string {
+    const sprint = this.tableData.sprint;
+    const audio = this.tableData.audioCall;
+    const totalSprint = sprint.proc.true + sprint.proc.false;
+    const totalAudio = audio.proc.true + audio.proc.false;
+    const totalCorrect = sprint.proc.true + audio.proc.true;
+    const totalInCorrect = sprint.proc.false + audio.proc.false;
+    const procCorrectSprint = totalSprint ? +(sprint.proc.true / totalSprint).toFixed(2) * 100 : 0;
+    const procCorrectAudio = totalAudio ? +(audio.proc.true / totalAudio).toFixed(2) * 100 : 0;
+    const totalProcWords = totalInCorrect
+        || totalCorrect ? (+(totalCorrect / (totalCorrect + totalInCorrect)).toFixed(2) * 100) : 0;
+
+    const statsForWords: { newWords: number; proc: number; learned: number; } = {
+      learned: this.tableData.learned,
+      newWords: this.tableData.audioCall.newWord + this.tableData.sprint.newWord,
+      proc: totalProcWords
+    };
+
     return `<main class="block-statistics">
                 <p>
                     Краткосрочная статистика по мини-играм и по словам за каждый день изучения:
@@ -120,15 +203,15 @@ export class StatisticsView {
                         </tr>
                         <tr>
                             <td>Спринт</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>${sprint.newWord}</td>
+                            <td>${procCorrectSprint} %</td>
+                            <td>${sprint.row}</td>
                         </tr>
                         <tr>
                             <td>Аудиовызов</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>${audio.newWord}</td>
+                            <td>${procCorrectAudio} %</td>
+                            <td>${audio.row}</td>
                         </tr>
                         <tr class="main-table-section">
                             <td>Статистика по словам</td>
@@ -138,9 +221,9 @@ export class StatisticsView {
                         </tr>
                         <tr>
                             <td>Слова</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>${statsForWords.newWords}</td>
+                            <td>${statsForWords.proc} %</td>
+                            <td>${statsForWords.learned}</td>
                         </tr>
                     </tbody>
                 </table>
