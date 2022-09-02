@@ -6,7 +6,7 @@ import WordSoundIcon from '../assets/images/volume_down.svg';
 import WordSoundOnIcon from '../assets/images/volume_up.svg';
 import RightAnswerSound from '../assets/audio/right-answer.mp3';
 import WrongAnswerSound from '../assets/audio/wrong-answer.mp3';
-import { Word } from '../../../../types/Word';
+import { IWord } from '../../../../types/game';
 
 class SprintView {
   private bodyKeyboardListenerFn: ((event: KeyboardEvent) => void) | undefined;
@@ -100,6 +100,10 @@ class SprintView {
     scoreEl.innerText = score.toString();
     wordContainer.append(wordEl);
     wordContainer.append(wordTranslateEl);
+    Array.from(document.querySelectorAll('.controls button')).forEach((btn) => {
+      // eslint-disable-next-line no-param-reassign
+      (btn as HTMLButtonElement).disabled = false;
+    });
   }
 
   getScoreBooster() {
@@ -136,11 +140,17 @@ class SprintView {
     const trueButton = document.createElement('button');
     trueButton.className = 'controls__btn controls__btn-true';
     trueButton.innerText = 'Верно';
-    trueButton.addEventListener('click', () => onCorrect());
+    trueButton.addEventListener('click', () => {
+      trueButton.disabled = true;
+      onCorrect();
+    });
     const falseButton = document.createElement('button');
     falseButton.className = 'controls__btn controls__btn-false';
     falseButton.innerText = 'Неверно';
-    falseButton.addEventListener('click', () => onIncorrect());
+    falseButton.addEventListener('click', () => {
+      falseButton.disabled = true;
+      onIncorrect();
+    });
     const correctAudio = document.createElement('audio');
     correctAudio.id = 'correct-sound';
     const incorrectAudio = document.createElement('audio');
@@ -156,7 +166,7 @@ class SprintView {
 
   finishGame(
     score: number,
-    answers: { word: Word, isCorrect: boolean }[],
+    answers: { word: IWord, isCorrect: boolean }[],
     onRestartGame: () => void,
     onClose: () => void
   ) {
@@ -217,7 +227,7 @@ class SprintView {
     }, 500);
   }
 
-  getAnswer({ word, wordTranslate, audio }: Word): HTMLElement {
+  getAnswer({ word, wordTranslate, audio }: IWord): HTMLElement {
     const wordContainer = document.createElement('div');
     wordContainer.className = 'word-in-result-container';
     const wordSoundBtn = document.createElement('button');
@@ -237,7 +247,7 @@ class SprintView {
     return wordContainer;
   }
 
-  getAnswersSection(answers: { word: Word, isCorrect: boolean }[]): HTMLElement {
+  getAnswersSection(answers: { word: IWord, isCorrect: boolean }[]): HTMLElement {
     const container = document.createElement('div');
     container.className = 'answers-container';
     const correctAnswers = answers.filter(({ isCorrect }) => isCorrect).map(({ word }) => word);

@@ -38,6 +38,10 @@ class Main {
         const page = Number.isInteger(Number(data.page)) ? Number(data.page) : undefined;
         sprint.start(group, page);
       })
+      .on('/sprint/:group', ({ data }) => {
+        const group = Number.isInteger(Number(data.group)) ? Number(data.group) : undefined;
+        sprint.start(group);
+      })
       .on('/sprint/?', () => {
         sprint.start();
       })
@@ -45,6 +49,10 @@ class Main {
         const group = Number.isInteger(Number(data.group)) ? Number(data.group) : undefined;
         const page = Number.isInteger(Number(data.page)) ? Number(data.page) : undefined;
         audioCall.start(group, page);
+      })
+      .on('/audiocall/:group', ({ data }) => {
+        const group = Number.isInteger(Number(data.group)) ? Number(data.group) : undefined;
+        audioCall.start(group);
       })
       .on('/audiocall/?', () => {
         audioCall.start();

@@ -1,6 +1,7 @@
-import { Word } from '../../../types/Word';
+import { IWord } from '../../../types/game';
 import Service from '../../constants/service';
 import WordsService from '../../services/words-service';
+import { addWordAndStatistic } from '../../user/sendWordStat';
 import AudioCallView from './view';
 
 class AudioCall {
@@ -12,36 +13,27 @@ class AudioCall {
 
   private audioCallView: AudioCallView;
 
-  private score;
-
-  private words: Word[];
+  private words: IWord[];
 
   private currentWordIndex: number;
 
-  private isCurrentWordCorrect: boolean;
-
   private correctAnswersInLine: number;
 
-  private isMuted: boolean;
-
-  private answers: Array<{ word: Word, isCorrect: boolean }>;
+  private answers: Array<{ word: IWord, isCorrect: boolean }>;
 
   private maxCorrectAnswers: number;
 
   constructor() {
     this.audioCallView = new AudioCallView();
-    this.score = 0;
     this.currentWordIndex = 0;
     this.words = [];
-    this.isCurrentWordCorrect = true;
     this.correctAnswersInLine = 0;
     this.maxCorrectAnswers = 0;
-    this.isMuted = false;
     this.answers = [];
   }
 
   start(vocabularyGroup?: number, vocabularyPage?: number) {
-    if (vocabularyGroup !== undefined && vocabularyPage !== undefined) {
+    if (vocabularyGroup !== undefined) {
       this.vocabularyGroup = vocabularyGroup;
       this.vocabularyPage = vocabularyPage;
       this.startGame();
@@ -50,27 +42,34 @@ class AudioCall {
     }
   }
 
-  private startGame() {
-    this.answers = [];
-    this.score = 0;
-    this.currentWordIndex = 0;
-    this.correctAnswersInLine = 0;
-    this.audioCallView.showLoading();
-    const lastPage = this.vocabularyPage as number;
-    Promise.all(Array.from(Array(lastPage + 1).keys()).map(
-      (page) => WordsService.getWords(this.vocabularyGroup, page)
+  private loadWords(group: number, page: number | undefined): Promise<void> {
+    const lastPage = page === undefined ? 29 : page;
+    console.log(lastPage);
+    return Promise.all(Array.from(Array(lastPage + 1).keys()).map(
+      (wordsPage) => WordsService.getWords(group, wordsPage)
     )).then((words) => {
-      const [lastPageWords, ...restWords] = words.reverse();
-      this.words = [
-        ...lastPageWords.sort(() => (Math.random() > 0.5) ? 1 : -1),
-        ...restWords.flat().sort(() => (Math.random() > 0.5) ? 1 : -1)
-      ];
+      if (page !== undefined) {
+        const [lastPageWords, ...restWords] = words.reverse();
+        this.words = [
+          ...lastPageWords.sort(() => (Math.random() > 0.5) ? 1 : -1),
+          ...restWords.flat().sort(() => (Math.random() > 0.5) ? 1 : -1)
+        ];
+      } else {
+        this.words = words.flat().sort(() => (Math.random() > 0.5) ? 1 : -1);
+      }
       if (this.words.length < 20) {
         // TODO: show error screen
       }
-      this.audioCallView.draw(
-        this.onAnswer.bind(this)
-      );
+    });
+  }
+
+  private startGame() {
+    this.answers = [];
+    this.currentWordIndex = 0;
+    this.correctAnswersInLine = 0;
+    this.audioCallView.showLoading();
+    this.loadWords(this.vocabularyGroup, this.vocabularyPage).then(() => {
+      this.audioCallView.draw();
       this.audioCallView.hideLoading();
       this.nextWord();
     });
@@ -79,7 +78,6 @@ class AudioCall {
   private finishGame() {
     if (this.words.length) {
       this.audioCallView.finishGame(
-        this.score,
         this.answers,
         this.onRestartGame.bind(this),
         this.onClose.bind(this)
@@ -90,11 +88,9 @@ class AudioCall {
       const incorrectWords = this.answers
         .filter(({ isCorrect }) => !isCorrect)
         .map(({ word: { id } }) => id);
-      // TODO: change method once implemented
-      // addWordAndStatistic(correctWords, incorrectWords, Sprint.gameName)
       this.maxCorrectAnswers = this.maxCorrectAnswers < this.correctAnswersInLine
         ? this.correctAnswersInLine : this.maxCorrectAnswers;
-      // TODO: send maxCorrectAnswers to server
+      addWordAndStatistic(correctWords, incorrectWords, AudioCall.gameName, this.maxCorrectAnswers);
     }
   }
 
@@ -103,12 +99,18 @@ class AudioCall {
       this.finishGame();
       return;
     }
+    const wrongTranslationsAll = [...this.words];
+    wrongTranslationsAll.splice(this.currentWordIndex, 1);
+    const wrongTranslations = new Array(4).fill(0).map(() => {
+      const randomIndex = Math.floor(Math.random() * wrongTranslationsAll.length);
+      return wrongTranslationsAll.splice(randomIndex, 1)[0].wordTranslate;
+    });
     const translations = [
       this.words[this.currentWordIndex].wordTranslate,
-      this.words[Math.floor(Math.random() * this.words.length)].wordTranslate,
-      this.words[Math.floor(Math.random() * this.words.length)].wordTranslate,
-      this.words[Math.floor(Math.random() * this.words.length)].wordTranslate,
-      this.words[Math.floor(Math.random() * this.words.length)].wordTranslate
+      wrongTranslations[0],
+      wrongTranslations[1],
+      wrongTranslations[2],
+      wrongTranslations[3]
     ].sort(() => (Math.random() > 0.5) ? 1 : -1);
     this.audioCallView.drawWord(
       `${Service.LINK}/${this.words[this.currentWordIndex].audio}`,
@@ -142,8 +144,7 @@ class AudioCall {
 
   private onGameLevelSelect(group: number) {
     this.vocabularyGroup = group;
-    this.vocabularyPage = 29;
-    window.location.pathname = `/audiocall/${this.vocabularyGroup}/${this.vocabularyPage}`;
+    window.location.pathname = `/audiocall/${this.vocabularyGroup}`;
   }
 
   private onClose() {
