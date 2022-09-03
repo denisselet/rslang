@@ -7,6 +7,7 @@ export default class SignInService {
       const response = await requestService.post(Service.LOGIN, data);
       if (response.token) {
         localStorage.setItem('user', JSON.stringify(response));
+        localStorage.setItem('dateTimeAuth', JSON.stringify(new Date().getTime()));
       } else if (response.message) {
         throw new Error(response.message);
       }

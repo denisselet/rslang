@@ -132,10 +132,30 @@ font-size: 15px;
 	border-radius: 6px;
 	user-select: none;
 }
- 
+	
 /* Checked */
 .form_radio_btn input[type=radio]:checked + label {
 	background: #528ba1;
+}
+
+.card-stat.none {
+	display: none;
+}
+
+.card-button.none {
+	display: none;
+}
+
+.card-stat-div.none {
+	display: none;
+}
+
+.card-but-hard.enter {
+	color: red;
+}
+
+.card-but-learned.enter {
+	color: red;
 }
 
 /*style end page textbook*/

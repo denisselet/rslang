@@ -7,12 +7,11 @@ class RequestService {
   response: (url: string, method: string, data?: object) => Promise<Response>;
 
   constructor() {
-    const user = JSON.parse(localStorage.getItem('user') as string);
     this.response = async (url, method, data) => fetch(`${Service.LINK}/${url}`, {
       method,
       body: JSON.stringify(data),
       headers: {
-        Authorization: `Bearer ${(user) ? user.token : null}`,
+        Authorization: `Bearer ${(JSON.parse(localStorage.getItem('user') as string)) ? JSON.parse(localStorage.getItem('user') as string).token : null}`,
         'Content-Type': ContentType.APPLICATION_JSON,
         Accept: Accept.APPLICATION_JSON
       }
