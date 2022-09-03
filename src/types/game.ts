@@ -1,4 +1,4 @@
-export interface Word {
+export interface IWord {
     id: string;
     image: string,
     word: string,

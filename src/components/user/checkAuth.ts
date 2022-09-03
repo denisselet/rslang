@@ -1,5 +1,3 @@
-import UsersService from '../services/users-service';
-
 export function checkAuth() {
   if (localStorage.getItem('user')) {
     if ((+localStorage.getItem('dateTimeAuth') + 14400000) < new Date().getTime()) {
