@@ -1,3 +1,5 @@
+import Service from '../../constants/service';
+import WordsService from '../../services/words-service';
 import { TextbookView } from './view';
 
 export class TextbookService {
@@ -10,6 +12,22 @@ export class TextbookService {
   public start(): void {
     this.textbookView.draw();
     this.addCardsWords();
+    WordsService.getWords(0, 0).then((words) => {
+      const playBtn = document.getElementById('play-action');
+      playBtn.addEventListener('click', () => {
+        const audio = document.getElementById('word-audio') as HTMLAudioElement;
+        audio.src = `${Service.LINK}/${words[0].audio}`;
+        audio.addEventListener('ended', () => {
+          audio.src = `${Service.LINK}/${words[0].audioExample}`;
+          audio.play();
+          audio.addEventListener('ended', () => {
+            audio.src = `${Service.LINK}/${words[0].audioMeaning}`;
+            audio.play();
+          }, { once: true });
+        }, { once: true });
+        return audio.play();
+      });
+    });
   }
 
   private addCardsWords(): void {
@@ -18,9 +36,10 @@ export class TextbookService {
     while (i < 20) {
       wrapperTextbookWords.insertAdjacentHTML('beforeend', `
 <div class='card'>
+<audio id="word-audio"></audio>
 <div class='card-img'>
 <img src='./assets/img/Denis.jpg' alt='photo'>
-<div class='card-volume'><img src="./assets/img/volume.svg" alt="play"></div>
+<div class='card-volume' id="play-action"><img src="./assets/img/volume.svg" alt="play"></div>
 </div>
 <h4 class='card-name'>Изучаемое слово: переменная слова</h4>
 <h5 class='card-transcription'>Транскрипция: переменная транскрипции</h5>
