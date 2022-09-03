@@ -1,3 +1,4 @@
+import Service from '../../../constants/service';
 import './style.scss';
 
 export class TextbookView {
