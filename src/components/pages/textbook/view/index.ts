@@ -1,3 +1,4 @@
+import Service from '../../../constants/service';
 import './style.scss';
 
 export class TextbookView {
@@ -5,7 +6,6 @@ export class TextbookView {
     const template = this.getTemplate();
     const content = document.querySelector('.mutable-content-wrapper');
     content.innerHTML = '';
-
     content.insertAdjacentHTML('beforeend', template);
   }
 
