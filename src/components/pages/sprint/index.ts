@@ -1,6 +1,8 @@
 import { IWord } from '../../../types/game';
 import Service from '../../constants/service';
+import UsersWordsService from '../../services/usersWords-service';
 import WordsService from '../../services/words-service';
+import { checkAuth } from '../../user/checkAuth';
 import { addWordAndStatistic } from '../../user/sendWordStat';
 import SprintView from './view';
 
@@ -68,21 +70,26 @@ class Sprint {
     }, 1000);
   }
 
-  private loadWords(group: number, page: number | undefined): Promise<void> {
+  private async loadWords(group: number, page: number | undefined): Promise<void> {
     const lastPage = page === undefined ? 29 : page;
-    return Promise.all(Array.from(Array(lastPage + 1).keys()).map(
+    const words = await Promise.all(Array.from(Array(lastPage + 1).keys()).map(
       (wordsPage) => WordsService.getWords(group, wordsPage)
-    )).then((words) => {
-      if (page !== undefined) {
-        const [lastPageWords, ...restWords] = words.reverse();
-        this.words = [
-          ...lastPageWords.sort(() => (Math.random() > 0.5) ? 1 : -1),
-          ...restWords.flat().sort(() => (Math.random() > 0.5) ? 1 : -1)
-        ];
-      } else {
-        this.words = words.flat().sort(() => (Math.random() > 0.5) ? 1 : -1);
-      }
-    });
+    ));
+    const userWords = checkAuth() ? await UsersWordsService.getAllUserWords() : [];
+    const learnedWordIds = userWords
+      .filter((item: { difficulty: string }) => item.difficulty === 'learned')
+      .map(({ wordId }: {wordId: string}) => wordId);
+    const wordsToLearn = words
+      .map((pageWords) => pageWords.filter(({ id }: {id: string}) => !learnedWordIds.includes(id)));
+    if (page !== undefined) {
+      const [lastPageWords, ...restWords] = wordsToLearn.reverse();
+      this.words = [
+        ...lastPageWords.sort(() => (Math.random() > 0.5) ? 1 : -1),
+        ...restWords.flat().sort(() => (Math.random() > 0.5) ? 1 : -1)
+      ];
+    } else {
+      this.words = wordsToLearn.flat().sort(() => (Math.random() > 0.5) ? 1 : -1);
+    }
   }
 
   private startGame() {
@@ -93,6 +100,10 @@ class Sprint {
     this.sprintView.showLoading();
     this.timer = 60;
     this.loadWords(this.vocabularyGroup, this.vocabularyPage).then(() => {
+      if (this.words.length < 10) {
+        this.sprintView.showError();
+        return;
+      }
       this.sprintView.draw(
         this.onCorrect.bind(this),
         this.onIncorrect.bind(this)
@@ -120,7 +131,9 @@ class Sprint {
         .map(({ word: { id } }) => id);
       this.maxCorrectAnswers = this.maxCorrectAnswers < this.correctAnswersInLine
         ? this.correctAnswersInLine : this.maxCorrectAnswers;
-      addWordAndStatistic(correctWords, incorrectWords, Sprint.gameName, this.maxCorrectAnswers);
+      if (checkAuth()) {
+        addWordAndStatistic(correctWords, incorrectWords, Sprint.gameName, this.maxCorrectAnswers);
+      }
     }
   }
 
