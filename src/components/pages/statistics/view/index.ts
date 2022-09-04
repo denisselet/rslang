@@ -1,6 +1,6 @@
 import { Chart, ChartItem, registerables } from 'chart.js';
-import UserStatisticService from '../../../services/userStatistic-service';
 import { getDateToday } from '../../../user/date';
+import { getStatistic } from '../../../user/statistic/getStatistic';
 import './style.scss';
 
 interface ILearnWordsEntity {
@@ -63,7 +63,7 @@ export class StatisticsView {
   private async getData(): Promise<void> {
     const today = getDateToday();
     try {
-      const stats: IStatisticsDto = await UserStatisticService.getStatistic();
+      const stats: IStatisticsDto = await getStatistic();
       this.tableData = stats.optional[today];
 
       this.graphForNewWordData = this.mapDataForGraphNewWords(stats);

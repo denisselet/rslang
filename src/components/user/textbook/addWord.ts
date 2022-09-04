@@ -107,22 +107,5 @@ export async function deleteLearnedWord(wordId: string) {
     delete objWord.id;
     delete objWord.wordId;
     await UsersWordsService.updateUserWord(wordId, objWord);
-  } else {
-    await UsersWordsService.createUserWord(wordId, {
-      difficulty: 'new',
-      optional: {
-        sprint: {
-          true: 0,
-          false: 0,
-          row: 0
-        },
-        audioCall: {
-          true: 0,
-          false: 0,
-          row: 0
-        }
-      }
-    });
   }
-
 }
