@@ -1,14 +1,4 @@
-import UsersService from "../services/users-service";
-
-export function checkAuth() {
-  if (localStorage.getItem('user')) {
-    if ((+localStorage.getItem('dateTimeAuth') + 14400000) < new Date().getTime()) {
-      changeToken();
-    }
-    return true;
-  }
-  return false;
-}
+import UsersService from '../services/users-service';
 
 export async function changeToken() {
   console.log('changeToken after 4 hour');
@@ -20,4 +10,14 @@ export async function changeToken() {
   userObj.refreshToken = response.refreshToken;
   localStorage.setItem('user', JSON.stringify(userObj));
   localStorage.setItem('dateTimeAuth', JSON.stringify(new Date().getTime()));
+}
+
+export function checkAuth() {
+  if (localStorage.getItem('user')) {
+    if ((+localStorage.getItem('dateTimeAuth') + 14400000) < new Date().getTime()) {
+      changeToken();
+    }
+    return true;
+  }
+  return false;
 }

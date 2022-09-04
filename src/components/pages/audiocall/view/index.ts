@@ -355,6 +355,14 @@ class AudioCallView {
   hideLoading() {
     document.getElementById('loading-indicator')?.remove();
   }
+
+  showError() {
+    const main = document.getElementById('audiocall-game-container');
+    main.innerHTML = '';
+    const header = document.createElement('h3');
+    header.innerText = 'Недостаточно слов для игры';
+    main.append(header);
+  }
 }
 
 export default AudioCallView;
