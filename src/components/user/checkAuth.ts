@@ -1,6 +1,5 @@
 import UsersService from '../services/users-service';
 
-
 async function changeToken() {
   console.log('changeToken after 4 hour');
   const userObj = JSON.parse(localStorage.getItem('user'));
