@@ -56,6 +56,12 @@ const config = {
           to({ absoluteFilename }) {
             return absoluteFilename.replace('src', 'dist');
           }
+        },
+        {
+          from: './src/assets/deploy/netlify.toml',
+          to() {
+            return '';
+          }
         }
       ]
     }),
