@@ -1,4 +1,6 @@
 import './style.css';
+import FullscreenOnIcon from '../assets/images/fullscreen_on.svg';
+import FullscreenExitIcon from '../assets/images/fullscreen_exit.svg';
 import StarIcon from '../assets/images/star_rate.svg';
 import SoundOnIcon from '../assets/images/music_note-on.svg';
 import SoundOffIcon from '../assets/images/music_note-off.svg';
@@ -6,7 +8,7 @@ import WordSoundIcon from '../assets/images/volume_down.svg';
 import WordSoundOnIcon from '../assets/images/volume_up.svg';
 import RightAnswerSound from '../assets/audio/right-answer.mp3';
 import WrongAnswerSound from '../assets/audio/wrong-answer.mp3';
-import { IWord } from '../../../../types/game';
+import { GameDocument, IWord } from '../../../../types/game';
 
 class SprintView {
   private bodyKeyboardListenerFn: ((event: KeyboardEvent) => void) | undefined;
@@ -19,9 +21,14 @@ class SprintView {
       const content = document.querySelector('.mutable-content-wrapper');
       content.append(main);
     }
+    const fullscreenBtn = document.createElement('button');
+    fullscreenBtn.id = 'fullscreen-btn';
+    fullscreenBtn.innerHTML = FullscreenOnIcon;
+    fullscreenBtn.addEventListener('click', (event) => this.toggleFullscreen(event));
     const game = document.createElement('div');
     game.id = 'game';
     main.append(game);
+    main.append(fullscreenBtn);
     const gameControls = this.getGameControls(onCorrect, onIncorrect);
     const gameHeader = document.createElement('div');
     gameHeader.className = 'game__game-header';
@@ -369,9 +376,45 @@ class SprintView {
   showError() {
     const main = document.getElementById('game-container');
     main.innerHTML = '';
-    const header = document.createElement('h3');
-    header.innerText = 'Недостаточно слов для игры';
-    main.append(header);
+    const errorMessage = document.createElement('p');
+    errorMessage.className = 'error-message';
+    errorMessage.innerText = 'Oops!.. Недостаточно слов. Начни игру с другой страницы учебника или из меню';
+    main.append(errorMessage);
+  }
+
+  cancelFullscreen() {
+    if ((document as Document & {cancelFullScreen: () => void}).cancelFullScreen) {
+      (document as Document & {cancelFullScreen: () => void}).cancelFullScreen();
+    }
+  }
+
+  toggleFullscreen(event: Event) {
+    let element = document.body;
+    if (event instanceof HTMLElement) {
+      element = event;
+    }
+    const isFullscreen = (document as Document & GameDocument)
+      .webkitIsFullScreen || (document as Document & GameDocument).mozFullScreen || false;
+
+    (element as HTMLElement & GameDocument).requestFullScreen = (
+      element as HTMLElement & GameDocument
+    )
+      .requestFullScreen
+      || (element as HTMLElement & GameDocument).webkitRequestFullScreen
+      || (element as HTMLElement & GameDocument).mozRequestFullScreen
+      || function isFscrn() { return false; };
+    (document as Document & GameDocument).cancelFullScreen = (document as Document & GameDocument)
+      .cancelFullScreen
+      || (document as Document & GameDocument).webkitCancelFullScreen
+      || (document as Document & GameDocument).mozCancelFullScreen
+      || function isFscrn() { return false; };
+    if (isFullscreen) {
+      (document as Document & {cancelFullScreen: () => void}).cancelFullScreen();
+      document.getElementById('fullscreen-btn').innerHTML = FullscreenOnIcon;
+    } else {
+      (element as HTMLElement & {requestFullScreen: () => void}).requestFullScreen();
+      document.getElementById('fullscreen-btn').innerHTML = FullscreenExitIcon;
+    }
   }
 }
 

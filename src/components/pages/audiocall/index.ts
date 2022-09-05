@@ -84,6 +84,7 @@ class AudioCall {
 
   private finishGame() {
     if (this.words.length) {
+      this.audioCallView.cancelFullscreen();
       this.audioCallView.finishGame(
         this.answers,
         this.onRestartGame.bind(this),
@@ -109,7 +110,7 @@ class AudioCall {
   }
 
   private nextWord() {
-    if (this.currentWordIndex >= this.words.length) {
+    if (this.currentWordIndex >= this.words.length || this.currentWordIndex >= 20) {
       this.finishGame();
       return;
     }
