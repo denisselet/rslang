@@ -178,7 +178,8 @@ export class StatisticsView {
     const totalAudio = audio.proc.true + audio.proc.false;
     const totalCorrect = sprint.proc.true + audio.proc.true;
     const totalInCorrect = sprint.proc.false + audio.proc.false;
-    const procCorrectSprint = totalSprint ? +(+(sprint.proc.true / totalSprint) * 100).toFixed(2) : 0;
+    const procCorrectSprint = totalSprint ? +(+(sprint.proc.true / totalSprint) * 100)
+      .toFixed(2) : 0;
     const procCorrectAudio = totalAudio ? +(+(audio.proc.true / totalAudio) * 100).toFixed(2) : 0;
     const totalProcWords = totalInCorrect
         || totalCorrect ? +(+(totalCorrect / (totalCorrect + totalInCorrect)) * 100).toFixed(2) : 0;
