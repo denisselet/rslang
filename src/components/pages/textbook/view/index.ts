@@ -1,3 +1,4 @@
+import { checkAuth } from '../../../user/checkAuth';
 import './style.scss';
 
 export class TextbookView {
@@ -206,7 +207,7 @@ export class TextbookView {
 </section>
 
 <section class="section-textbook-words">
-<div class="wrapper-textbook-links"></div>
+<div class="wrapper-textbook-links${(checkAuth()) ? '' : ' none'}"></div>
 <p>Слова для изучения:</p>
 <div class="wrapper-textbook-words"></div>
 

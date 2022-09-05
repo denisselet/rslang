@@ -86,7 +86,6 @@ export class TextbookService {
       arrCard = await Promise.all(prom);
     } else {
       arrWord = await WordsService.getWords(group, page);
-      document.querySelector('.wrapper-textbook-links').classList.remove(ATTRIBUTE_NONE);
     }
 
     let i = 0;
@@ -118,11 +117,11 @@ export class TextbookService {
         <h5 class='card-translation'>Перевод: <strong>${card.wordTranslate}</strong></h5>
         <h5 class='card-meaning-ru'>${card.textMeaningTranslate}</h5>
         <h5 class='card-example-ru'>Пример: ${card.textExampleTranslate}</h5>
-        <div class='card-stat-div${(checkAuth()) ? '' : ATTRIBUTE_NONE}'>
+        <div class='card-stat-div${(checkAuth()) ? '' : ' ' + ATTRIBUTE_NONE}'>
         <h5 class='card-stat'>Спринт: ${(objWord) ? objWord.optional.sprint.true : 0} : ${(objWord) ? objWord.optional.sprint.false : 0}</h5>
         <h5 class='card-stat'>Аудиовызов: ${(objWord) ? objWord.optional.audioCall.true : 0} : ${(objWord) ? objWord.optional.audioCall.false : 0}</h5>
         </div>
-        <div class='card-button${(checkAuth()) ? '' : ATTRIBUTE_NONE}'>
+        <div class='card-button${(checkAuth()) ? '' : ' ' + ATTRIBUTE_NONE}'>
           <button class="card-but-hard${(objWord && objWord.difficulty === ATTRIBUTE_HARD) ? ' ' + ATTRIBUTE_ENTER : ''}" id="card-but-hard-${card.id}">${(objWord && objWord.difficulty === ATTRIBUTE_HARD) ? 'Удалить из сложного' : 'Сложное'}</button>
           <button class="card-but-learned${(objWord && objWord.difficulty === ATTRIBUTE_LEARNED) ? ' ' + ATTRIBUTE_ENTER : ''}" id="card-but-learned-${card.id}">${(objWord && objWord.difficulty === ATTRIBUTE_LEARNED) ? 'Удалить из изученного' : 'Изученное'}</button>
         </div>
