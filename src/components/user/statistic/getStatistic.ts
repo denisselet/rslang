@@ -56,7 +56,8 @@ export async function getStatistic() {
     };
     delete stat.id;
     await UserStatisticService.upsertStatistic(stat);
-    return await UserStatisticService.getStatistic();
+    const result = await UserStatisticService.getStatistic();
+    return result;
   }
   return stat;
 }
