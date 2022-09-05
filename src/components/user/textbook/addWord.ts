@@ -3,17 +3,18 @@ import UsersWordsService from '../../services/usersWords-service';
 import { getDateToday } from '../date';
 import { getStatistic } from '../statistic/getStatistic';
 
-export async function addHardWord(wordId: string) {
+export async function addHardWord(id: string) {
   const userWords = await UsersWordsService.getAllUserWords();
-  const arrWordIdUser: string[] = userWords.reduce((acc: string[], { wordId }: {wordId: string}) => [...acc, wordId], []);
-  if (arrWordIdUser.includes(wordId)) {
-    const objWord = userWords.find((item: { wordId: string; }) => item.wordId === wordId);
+  const arrWordIdUser: string[] = userWords
+    .reduce((acc: string[], { wordId }: {wordId: string}) => [...acc, wordId], []);
+  if (arrWordIdUser.includes(id)) {
+    const objWord = userWords.find((item: { wordId: string; }) => item.wordId === id);
     objWord.difficulty = 'hard';
     delete objWord.id;
     delete objWord.wordId;
-    await UsersWordsService.updateUserWord(wordId, objWord);
+    await UsersWordsService.updateUserWord(id, objWord);
   } else {
-    await UsersWordsService.createUserWord(wordId, {
+    await UsersWordsService.createUserWord(id, {
       difficulty: 'hard',
       optional: {
         sprint: {
@@ -31,29 +32,31 @@ export async function addHardWord(wordId: string) {
   }
 }
 
-export async function deleteHardWord(wordId: string) {
+export async function deleteHardWord(id: string) {
   const userWords = await UsersWordsService.getAllUserWords();
-  const arrWordIdUser: string[] = userWords.reduce((acc: string[], { wordId }: {wordId: string}) => [...acc, wordId], []);
-  if (arrWordIdUser.includes(wordId)) {
-    const objWord = userWords.find((item: { wordId: string; }) => item.wordId === wordId);
+  const arrWordIdUser: string[] = userWords
+    .reduce((acc: string[], { wordId }: {wordId: string}) => [...acc, wordId], []);
+  if (arrWordIdUser.includes(id)) {
+    const objWord = userWords.find((item: { wordId: string; }) => item.wordId === id);
     objWord.difficulty = 'new';
     delete objWord.id;
     delete objWord.wordId;
-    await UsersWordsService.updateUserWord(wordId, objWord);
+    await UsersWordsService.updateUserWord(id, objWord);
   }
 }
 
-export async function addLearnedWord(wordId: string) {
+export async function addLearnedWord(id: string) {
   const userWords = await UsersWordsService.getAllUserWords();
-  const arrWordIdUser: string[] = userWords.reduce((acc: string[], { wordId }: {wordId: string}) => [...acc, wordId], []);
-  if (arrWordIdUser.includes(wordId)) {
-    const objWord = userWords.find((item: { wordId: string; }) => item.wordId === wordId);
+  const arrWordIdUser: string[] = userWords
+    .reduce((acc: string[], { wordId }: {wordId: string}) => [...acc, wordId], []);
+  if (arrWordIdUser.includes(id)) {
+    const objWord = userWords.find((item: { wordId: string; }) => item.wordId === id);
     objWord.difficulty = 'learned';
     delete objWord.id;
     delete objWord.wordId;
-    await UsersWordsService.updateUserWord(wordId, objWord);
+    await UsersWordsService.updateUserWord(id, objWord);
   } else {
-    await UsersWordsService.createUserWord(wordId, {
+    await UsersWordsService.createUserWord(id, {
       difficulty: 'learned',
       optional: {
         sprint: {
@@ -93,19 +96,19 @@ export async function addLearnedWord(wordId: string) {
         row: 0
       },
       learned: 1
-    }
+    };
   }
   await UserStatisticService.upsertStatistic(stat);
 }
 
-export async function deleteLearnedWord(wordId: string) {
+export async function deleteLearnedWord(id: string) {
   const userWords = await UsersWordsService.getAllUserWords();
-  const arrWordIdUser: string[] = userWords.reduce((acc: string[], { wordId }: {wordId: string}) => [...acc, wordId], []);
-  if (arrWordIdUser.includes(wordId)) {
-    const objWord = userWords.find((item: { wordId: string; }) => item.wordId === wordId);
+  const arrWordIdUser: string[] = userWords
+    .reduce((acc: string[], { wordId }: {wordId: string}) => [...acc, wordId], []);
+  if (arrWordIdUser.includes(id)) {
+    const objWord = userWords.find((item: { wordId: string; }) => item.wordId === id);
     objWord.difficulty = 'new';
     delete objWord.id;
     delete objWord.wordId;
-    await UsersWordsService.updateUserWord(wordId, objWord);
   }
 }
