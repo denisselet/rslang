@@ -1,0 +1,168 @@
+/*style start page textbook*/
+.block-textbook {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.block-textbook>p {
+	letter-spacing: 1.2px;
+	font-size: 22px;
+	margin-top: 20px;
+}
+
+.block-textbook section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.section-textbook-partition {
+	margin-top: 20px;
+}
+
+.section-textbook-partition>p {
+	margin: 20px 0 20px 0;
+}
+
+.section-textbook-pages {
+	margin-top: 40px;
+}
+
+.section-textbook-pages>p {
+	margin: 10px 0 20px 0;
+}
+ 
+.section-textbook-words {
+	margin-top: 40px;
+}
+
+.section-textbook-words>p {
+	margin-top: 20px;
+}
+
+.wrapper-partition-btn,
+.wrapper-pages-btn {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 7px;
+}
+
+.wrapper-textbook-words {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 80px;
+	margin-top: 40px;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	row-gap: 15px;
+	width: 302px;
+	border: 1px solid rgba(71, 71, 71, 0.4);
+	border-radius: 10px;
+	padding: 5px;
+}
+
+
+.card-img>img {
+	border-radius: 10px;
+	width: 290px;
+	height: 170px;
+	border: 1px solid rgba(71, 71, 71, 0.4);
+}
+
+.card-volume {
+	cursor: pointer;
+	width: 50px;
+	margin-top: 5px;
+}
+
+.card-volume:hover {
+	background-color: rgba(71, 71, 71, 0.35);
+	border-radius: 30px;
+}
+
+
+.card h5 {
+font-weight: lighter;
+font-size: 15px;
+}
+
+.card-button {
+	display:flex;
+	justify-content: space-around;
+}
+
+.card-button button {
+	font-size: 16px;
+	cursor: pointer;
+	padding: 5px 10px;
+	border: 1px solid rgb(83, 7, 184);
+	border-radius: 6px;
+}
+
+.card-button button:hover {
+	background: #528ba1;
+}
+
+.block-textbook section p {
+	letter-spacing: 1.2px;
+	font-size: 18px;
+}
+
+.form_radio_btn {
+	display: block;
+}
+
+.form_radio_btn input[type=radio] {
+	display: none;
+}
+
+.form_radio_btn label {
+	display: block;
+	cursor: pointer;
+	padding: 0px 15px;
+	line-height: 34px;
+	border: 1px solid rgb(83, 7, 184);
+	border-radius: 6px;
+	user-select: none;
+}
+	
+/* Checked */
+.form_radio_btn input[type=radio]:checked + label {
+	background: #528ba1;
+}
+
+.card-stat.none {
+	display: none;
+}
+
+.card-button.none {
+	display: none;
+}
+
+.card-stat-div.none {
+	display: none;
+}
+
+.card-but-hard.enter {
+	background-color: red;
+}
+
+.card-but-learned.enter {
+	background-color: green;
+}
+
+.form_radio_btn.none {
+	display: none;
+}
+
+.wrapper-textbook-links.none {
+	display: none;
+}
+/*style end page textbook*/
