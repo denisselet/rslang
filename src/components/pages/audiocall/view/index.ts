@@ -1,11 +1,14 @@
 import { IWord } from '../../../../types/game';
 import './style.css';
+import FullscreenOnIcon from '../assets/images/fullscreen_on.svg';
+import FullscreenExitIcon from '../assets/images/fullscreen_exit.svg';
 import SoundOnIcon from '../assets/images/music_note-on.svg';
 import SoundOffIcon from '../assets/images/music_note-off.svg';
 import WordSoundIcon from '../assets/images/volume_down.svg';
 import WordSoundOnIcon from '../assets/images/volume_up.svg';
 import RightAnswerSound from '../assets/audio/right-answer.mp3';
 import WrongAnswerSound from '../assets/audio/wrong-answer.mp3';
+import { GameDocument } from '../../../../types/game';
 
 class AudioCallView {
   private bodyKeyboardListenerFn: ((event: KeyboardEvent) => void) | undefined;
@@ -20,7 +23,12 @@ class AudioCallView {
     }
     const game = document.createElement('div');
     game.id = 'audiocall-game';
+    const fullscreenBtn = document.createElement('button');
+    fullscreenBtn.id = 'fullscreen-btn';
+    fullscreenBtn.innerHTML = FullscreenOnIcon;
+    fullscreenBtn.addEventListener('click', (event) => this.toggleFullscreen(event));
     main.append(game);
+    main.append(fullscreenBtn);
     const gameControls = this.getGameControls();
     const gameHeader = document.createElement('div');
     gameHeader.className = 'audiocall-game__game-header';
@@ -45,6 +53,41 @@ class AudioCallView {
     game.append(gameHeader);
     game.append(wordContainer);
     game.append(gameControls);
+  }
+
+  cancelFullscreen() {
+    if ((document as Document & {cancelFullScreen: () => void}).cancelFullScreen) {
+      (document as Document & {cancelFullScreen: () => void}).cancelFullScreen();
+    }
+  }
+
+  toggleFullscreen(event: Event) {
+    let element = document.body;
+    if (event instanceof HTMLElement) {
+      element = event;
+    }
+    const isFullscreen = (document as Document & GameDocument)
+      .webkitIsFullScreen || (document as Document & GameDocument).mozFullScreen || false;
+
+    (element as HTMLElement & GameDocument).requestFullScreen = (
+      element as HTMLElement & GameDocument
+    )
+      .requestFullScreen
+      || (element as HTMLElement & GameDocument).webkitRequestFullScreen
+      || (element as HTMLElement & GameDocument).mozRequestFullScreen
+      || function isFscrn() { return false; };
+    (document as Document & GameDocument).cancelFullScreen = (document as Document & GameDocument)
+      .cancelFullScreen
+      || (document as Document & GameDocument).webkitCancelFullScreen
+      || (document as Document & GameDocument).mozCancelFullScreen
+      || function isFscrn() { return false; };
+    if (isFullscreen) {
+      (document as Document & {cancelFullScreen: () => void}).cancelFullScreen();
+      document.getElementById('fullscreen-btn').innerHTML = FullscreenOnIcon;
+    } else {
+      (element as HTMLElement & {requestFullScreen: () => void}).requestFullScreen();
+      document.getElementById('fullscreen-btn').innerHTML = FullscreenExitIcon;
+    }
   }
 
   setKeyboardAnswerListener(onAnswer: (translation: string) => void) {
@@ -359,9 +402,10 @@ class AudioCallView {
   showError() {
     const main = document.getElementById('audiocall-game-container');
     main.innerHTML = '';
-    const header = document.createElement('h3');
-    header.innerText = 'Недостаточно слов для игры';
-    main.append(header);
+    const errorMessage = document.createElement('p');
+    errorMessage.className = 'error-message';
+    errorMessage.innerText = 'Oops!.. Недостаточно слов. Начни игру с другой страницы учебника или из меню';
+    main.append(errorMessage);
   }
 }
 

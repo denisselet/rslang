@@ -117,6 +117,7 @@ class Sprint {
 
   private finishGame() {
     if (this.words.length) {
+      this.sprintView.cancelFullscreen();
       this.sprintView.finishGame(
         this.score,
         this.answers,
