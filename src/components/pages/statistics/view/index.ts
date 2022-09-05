@@ -1,6 +1,6 @@
 import { Chart, ChartItem, registerables } from 'chart.js';
-import UserStatisticService from '../../../services/userStatistic-service';
 import { getDateToday } from '../../../user/date';
+import { getStatistic } from '../../../user/statistic/getStatistic';
 import './style.scss';
 
 interface ILearnWordsEntity {
@@ -63,7 +63,7 @@ export class StatisticsView {
   private async getData(): Promise<void> {
     const today = getDateToday();
     try {
-      const stats: IStatisticsDto = await UserStatisticService.getStatistic();
+      const stats: IStatisticsDto = await getStatistic();
       this.tableData = stats.optional[today];
 
       this.graphForNewWordData = this.mapDataForGraphNewWords(stats);
@@ -178,10 +178,10 @@ export class StatisticsView {
     const totalAudio = audio.proc.true + audio.proc.false;
     const totalCorrect = sprint.proc.true + audio.proc.true;
     const totalInCorrect = sprint.proc.false + audio.proc.false;
-    const procCorrectSprint = totalSprint ? +(sprint.proc.true / totalSprint).toFixed(2) * 100 : 0;
-    const procCorrectAudio = totalAudio ? +(audio.proc.true / totalAudio).toFixed(2) * 100 : 0;
+    const procCorrectSprint = totalSprint ? +(+(sprint.proc.true / totalSprint) * 100).toFixed(2) : 0;
+    const procCorrectAudio = totalAudio ? +(+(audio.proc.true / totalAudio) * 100).toFixed(2) : 0;
     const totalProcWords = totalInCorrect
-        || totalCorrect ? (+(totalCorrect / (totalCorrect + totalInCorrect)).toFixed(2) * 100) : 0;
+        || totalCorrect ? +(+(totalCorrect / (totalCorrect + totalInCorrect)) * 100).toFixed(2) : 0;
 
     const statsForWords: { newWords: number; proc: number; learned: number; } = {
       learned: this.tableData.learned,
