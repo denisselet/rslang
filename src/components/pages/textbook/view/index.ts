@@ -1,4 +1,4 @@
-import Service from '../../../constants/service';
+import { checkAuth } from '../../../user/checkAuth';
 import './style.scss';
 
 export class TextbookView {
@@ -46,7 +46,7 @@ export class TextbookView {
 <label for="radio-partition-6">Раздел 6</label>
 </div>
 
-<div class="form_radio_btn">
+<div class="form_radio_btn none" id="div-but-hard">
 <input id="radio-partition-7" type="radio" name="partition" value="7">
 <label for="radio-partition-7">Сложные слова</label>
 </div>
@@ -207,6 +207,7 @@ export class TextbookView {
 </section>
 
 <section class="section-textbook-words">
+<div class="wrapper-textbook-links${(checkAuth()) ? '' : ' none'}"></div>
 <p>Слова для изучения:</p>
 <div class="wrapper-textbook-words"></div>
 
