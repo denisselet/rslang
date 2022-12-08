@@ -1,6 +1,6 @@
 export default class Service {
   static get LINK() {
-    return 'https://learn-words-application.herokuapp.com';
+    return 'https://rslang-server.onrender.com';
     // return 'http://localhost:8000';
   }
 
